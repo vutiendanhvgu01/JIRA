@@ -1,0 +1,49 @@
+.form-createTask {
+    .form-group {
+        margin-bottom : 15px;
+
+        .title-createTask {
+            font-size:18px;
+            margin-bottom:10px;
+        }
+
+        .wrap-select {
+            position: relative;
+            .createTask-select {
+                padding: 8px 10px;
+                border-radius: 10px ;
+                font-size:16px;
+                appearance:none;
+                border: none;
+                outline:none;
+                transition: all 0.5s ease;
+                &:hover {
+                    border-color:  #001529;
+                }
+                &:focus {
+                    border-color:  #001529;
+                }
+                option {
+                    font-size:16px;
+                }
+            }
+            .arrowDown {
+                position: absolute;
+                top:13px;
+                right:15px;
+                font-size: 14px;
+            }
+    
+
+
+        }
+ 
+
+    }
+    .tox.tox-tinymce { 
+        margin-top:20px;
+    }
+
+
+
+}
