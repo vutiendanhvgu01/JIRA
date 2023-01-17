@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AutoComplete, Avatar, Popover, TableProps, Tag } from "antd";
 import { Button, Space, Table } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import ReactHtmlParser, {
+  processNodes,
+  convertNodeToElement,
+  htmlparser2,
+} from "react-html-parser";
 import type {
   ColumnsType,
   FilterValue,
@@ -56,6 +60,7 @@ const ProjectManagement = (props: Props) => {
   >({});
   const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
   const dispatch: DispatchType = useDispatch();
+  const searchRef = useRef(null);
   console.log(projectDetail);
   useEffect(() => {
     const action = getProjectDetailAPI();
@@ -118,10 +123,8 @@ const ProjectManagement = (props: Props) => {
       dataIndex: "description",
       key: "description",
       render: (text, record, index) => {
-        let tsxContent = text
-          .replace(/(&nbsp;)*/g, "")
-          .replace(/(<p>)*/g, "")
-          .replace(/<(\/)?p[^>]*>/g, "");
+        const tsxContent = ReactHtmlParser(text);
+
         return <div>{tsxContent}</div>;
       },
     },
@@ -244,7 +247,12 @@ const ProjectManagement = (props: Props) => {
                     }}
                     style={{ width: "100%" }}
                     onSearch={(value) => {
-                      dispatch(getUserApi(value));
+                      if (searchRef.current) {
+                        clearInterval(searchRef.current);
+                      }
+                      searchRef.current = setTimeout(() => {
+                        dispatch(getUserApi(value));
+                      }, 300);
                     }}
                   />
                 );
@@ -309,5 +317,4 @@ const ProjectManagement = (props: Props) => {
     </>
   );
 };
-
 export default ProjectManagement;
