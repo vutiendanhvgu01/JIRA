@@ -1,17 +1,20 @@
-import React from "react";
-import { Button, Input } from "antd";
+import React, { useState } from "react";
+import { Button, Input, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/configStore";
 import UpdateProfile from "./UpdateProfile";
+import { setModalOpen } from "../../redux/reducers/UserReducer";
+import { useFormik } from "formik";
 
 type Props = {};
 
 const Profile = (props: Props) => {
   const dispatch: DispatchType = useDispatch();
-
-  const { userLogin } = useSelector((state: RootState) => {
+  const { userLogin,ModalOpen } = useSelector((state: RootState) => {
     return state.UserReducer;
   });
+
+ 
   return (
     <>
       <div className="container">
@@ -40,41 +43,26 @@ const Profile = (props: Props) => {
                 <p>
                   Name <span className="required-icon">*</span>
                 </p>
-                <Input defaultValue={userLogin.name} />
+                <Input defaultValue={userLogin.name} readOnly/>
               </div>
               <div className="form-group">
                 <p>
                   Phone number <span className="required-icon">*</span>
                 </p>
-                <Input defaultValue={userLogin.phoneNumber} />
+                <Input defaultValue={userLogin.phoneNumber} readOnly/>
               </div>
-              <div className="form-group">
-                <p>
-                  Password <span className="required-icon">*</span>
-                </p>
-                <Input placeholder="input with clear icon" allowClear />
-              </div>
-              <div className="form-group">
-                <p>
-                  Password confirmation <span className="required-icon">*</span>
-                </p>
-                <Input placeholder="input with clear icon" allowClear />
-              </div>
+             
             </div>
             <div className="group-button d-flex mt-3">
-              <Button
-                danger={true}
-                htmlType="button"
-                size="large"
-                style={{ marginRight: "15px" }}
-              >
-                Cancel
-              </Button>
-
-              <Button type="primary" htmlType="button" size="large">
-                Update
+          
+              <Button type="primary" htmlType="button" size="large" onClick={() => {
+                dispatch(setModalOpen(true))
+              }}>
+                Update profile
               </Button>
             </div>
+              {<UpdateProfile/>}
+        
             {/* <UpdateProfile /> */}
           </div>
         </div>

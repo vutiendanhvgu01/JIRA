@@ -12,9 +12,11 @@ import {
   USER_LOGIN,
   TOKEN_CYBERSOFT,
   getStore,
+  http,
 } from "../../util/config";
 
 import { DispatchType } from "../configStore";
+import { notifiFucntion } from "../../util/notificationCyberBug";
 export interface UserLoginResult {
   id:          number;
   email:       string;
@@ -23,11 +25,20 @@ export interface UserLoginResult {
   name:        string;
   accessToken: string;
 }
+export interface UserUpdate {
+  id:string;
+  passWord:string;
+  email:string;
+  name:string;
+  phoneNumber:string;
+}
 export interface UserState {
   userLogin: UserLoginResult;
+  ModalOpen:boolean;
 }
 const initialState = {
   userLogin: getStoreJson(USER_LOGIN) ? getStoreJson(USER_LOGIN) : null,
+  ModalOpen:false,
 };
 
 const UserReducer = createSlice({
@@ -37,10 +48,13 @@ const UserReducer = createSlice({
     loginAction: (state: UserState, action: PayloadAction<UserLoginResult>) => {
       state.userLogin = action.payload;
     },
+    setModalOpen: (state:UserState,action:PayloadAction<boolean>) => {
+      state.ModalOpen = action.payload;
+    }
   },
 });
 
-export const { loginAction } = UserReducer.actions;
+export const { loginAction, setModalOpen } = UserReducer.actions;
 
 export default UserReducer.reducer;
 
@@ -64,3 +78,19 @@ export const loginAsyncApi = (userLogin: UserLoginModel) => {
     history.push("/home")
   };
 };
+
+export const editUser = (value:UserUpdate) => {
+  return async (dispatch:DispatchType) => {
+    const result = await http.put('/api/Users/editUser',value)
+    console.log(result.data.content)
+    const actionCloseModal = setModalOpen(false)
+    dispatch(actionCloseModal)
+    notifiFucntion('success', 'Cập nhật thông tin thành công')
+    const userLogin:UserLoginModel = {
+      email:value.email,
+      passWord:value.passWord
+    }
+    const userLoginAction = loginAsyncApi(userLogin)
+    dispatch(userLoginAction)
+  }
+}

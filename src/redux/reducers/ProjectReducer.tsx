@@ -265,7 +265,9 @@ export const updateProjectAPI = (projectUpdate: ProjectEdit) => {
     });
     console.log(result.data.content);
     const action = getProjectDetailAPI();
-
+    dispatch({
+      type:'CLOSE_DRAWER'
+    })
     dispatch(action);
     notifiFucntion("success", "Update project success");
   };
@@ -288,3 +290,5 @@ export const deleteProjectAPI = (projectUpdate: number) => {
     notifiFucntion("success", "Delete project success");
   };
 };
+
+
