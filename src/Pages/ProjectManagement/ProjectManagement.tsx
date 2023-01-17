@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { TableProps, Tag } from "antd";
+import { AutoComplete, Avatar, Popover, TableProps, Tag } from "antd";
 import { Button, Space, Table } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import type {
   ColumnsType,
   FilterValue,
@@ -21,6 +22,8 @@ import {
 } from "../../redux/reducers/ProjectReducer";
 import { message, Popconfirm } from "antd";
 import EditProjectForm from "../../Component/Form/EditProjectForm/EditProjectForm";
+import { addUserApi, getUserApi } from "../../redux/reducers/UserReducer";
+import { number } from "yup";
 
 type Props = {};
 interface DataType {
@@ -42,7 +45,8 @@ const ProjectManagement = (props: Props) => {
   const { projectDetail } = useSelector(
     (state: RootState) => state.ProjectReducer
   );
-
+  const { user } = useSelector((state: RootState) => state.UserReducer);
+  const [value, setValue] = useState("");
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
@@ -144,6 +148,54 @@ const ProjectManagement = (props: Props) => {
           return -1;
         }
         return 1;
+      },
+    },
+    {
+      title: "member",
+      key: "member",
+      render: (text, record, index) => {
+        return (
+          <div>
+            {record.members?.slice(0, 3).map((member: any, index) => {
+              return <Avatar key={index} src={member.avatar} />;
+            })}
+            {record.members?.length > 3 ? <Avatar>...</Avatar> : ""}
+            <Popover
+              placement="topLeft"
+              title={"Add user"}
+              content={() => {
+                return (
+                  <AutoComplete
+                    options={user?.map((us, index) => {
+                      return { label: us.name, value: us.userId.toString() };
+                    })}
+                    value={value}
+                    onChange={(text) => {
+                      setValue(text);
+                    }}
+                    onSelect={(valueSelect, option) => {
+                      setValue(option.label);
+
+                      dispatch(
+                        addUserApi({
+                          projectId: record.id,
+                          userId: Number(valueSelect),
+                        })
+                      );
+                    }}
+                    style={{ width: "100%" }}
+                    onSearch={(value) => {
+                      dispatch(getUserApi(value));
+                    }}
+                  />
+                );
+              }}
+              trigger="click"
+            >
+              <Button>+</Button>
+            </Popover>
+          </div>
+        );
       },
     },
     {
