@@ -39,22 +39,22 @@ export interface AddUser {
   userId: number;
 }
 export interface UserUpdate {
-  id:string;
-  passWord:string;
-  email:string;
-  name:string;
-  phoneNumber:string;
+  id: string;
+  passWord: string;
+  email: string;
+  name: string;
+  phoneNumber: string;
 }
 export interface UserState {
   userLogin: UserLoginResult;
   user: USER[];
   addUser: AddUser;
-  ModalOpen:boolean;
+  ModalOpen: boolean;
 }
 const initialState = {
   userLogin: getStoreJson(USER_LOGIN) ? getStoreJson(USER_LOGIN) : null,
   user: [],
-  ModalOpen:false,
+  ModalOpen: false,
 };
 
 const UserReducer = createSlice({
@@ -67,9 +67,9 @@ const UserReducer = createSlice({
     getUserAction: (state: UserState, action: PayloadAction<USER[]>) => {
       state.user = action.payload;
     },
-    setModalOpen: (state:UserState,action:PayloadAction<boolean>) => {
+    setModalOpen: (state: UserState, action: PayloadAction<boolean>) => {
       state.ModalOpen = action.payload;
-    }
+    },
   },
 });
 
@@ -127,19 +127,34 @@ export const addUserApi = (addUser: AddUser) => {
     console.log(result.data.content);
   };
 };
+export const deleteUserApi = (deleteUser: AddUser) => {
+  return async (dispatch: DispatchType) => {
+    const result = await axios({
+      url: `https://jiranew.cybersoft.edu.vn/api/Project/removeUserFromProject`,
+      method: "post",
+      data: deleteUser,
+      headers: {
+        TokenCybersoft: TOKEN_CYBERSOFT,
+        Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
+      },
+    });
+    dispatch(getProjectDetailAPI());
+    console.log(result.data.content);
+  };
+};
 
-export const editUser = (value:UserUpdate) => {
-  return async (dispatch:DispatchType) => {
-    const result = await http.put('/api/Users/editUser',value)
-    console.log(result.data.content)
-    const actionCloseModal = setModalOpen(false)
-    dispatch(actionCloseModal)
-    notifiFucntion('success', 'Cập nhật thông tin thành công')
-    const userLogin:UserLoginModel = {
-      email:value.email,
-      passWord:value.passWord
-    }
-    const userLoginAction = loginAsyncApi(userLogin)
-    dispatch(userLoginAction)
-  }
-}
+export const editUser = (value: UserUpdate) => {
+  return async (dispatch: DispatchType) => {
+    const result = await http.put("/api/Users/editUser", value);
+    console.log(result.data.content);
+    const actionCloseModal = setModalOpen(false);
+    dispatch(actionCloseModal);
+    notifiFucntion("success", "Cập nhật thông tin thành công");
+    const userLogin: UserLoginModel = {
+      email: value.email,
+      passWord: value.passWord,
+    };
+    const userLoginAction = loginAsyncApi(userLogin);
+    dispatch(userLoginAction);
+  };
+};

@@ -22,7 +22,11 @@ import {
 } from "../../redux/reducers/ProjectReducer";
 import { message, Popconfirm } from "antd";
 import EditProjectForm from "../../Component/Form/EditProjectForm/EditProjectForm";
-import { addUserApi, getUserApi } from "../../redux/reducers/UserReducer";
+import {
+  addUserApi,
+  deleteUserApi,
+  getUserApi,
+} from "../../redux/reducers/UserReducer";
 import { number } from "yup";
 
 type Props = {};
@@ -157,7 +161,62 @@ const ProjectManagement = (props: Props) => {
         return (
           <div>
             {record.members?.slice(0, 3).map((member: any, index) => {
-              return <Avatar key={index} src={member.avatar} />;
+              return (
+                <Popover
+                  key={index}
+                  placement="top"
+                  title={"member"}
+                  content={() => {
+                    return (
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>id</th>
+                            <th>avatar</th>
+                            <th>name</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {record.members?.map((item: any, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{item.userId}</td>
+                                <td>
+                                  <img
+                                    src={item.avatar}
+                                    width="50"
+                                    height="50"
+                                    alt=""
+                                  />
+                                </td>
+                                <td>{item.name}</td>
+                                <td>
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={() => {
+                                      dispatch(
+                                        deleteUserApi({
+                                          projectId: record.id,
+                                          userId: item.userId,
+                                        })
+                                      );
+                                    }}
+                                  >
+                                    x
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    );
+                  }}
+                >
+                  <Avatar key={index} src={member.avatar} />
+                </Popover>
+              );
             })}
             {record.members?.length > 3 ? <Avatar>...</Avatar> : ""}
             <Popover
