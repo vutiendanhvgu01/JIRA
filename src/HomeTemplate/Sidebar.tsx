@@ -50,7 +50,7 @@ const Sidebar = (props: Props) => {
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
       className="bg-primary"
-      style={{ height: "100vh" }}
+      style={{ height: "150vh" }}
     >
       <Menu
         className="bg-primary pt-5"
