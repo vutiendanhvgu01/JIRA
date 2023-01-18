@@ -18,7 +18,7 @@ import {
 import { DispatchType } from "../configStore";
 import { notifiFucntion } from "../../util/notificationCyberBug";
 import userEvent from "@testing-library/user-event";
-import { getProjectDetailAPI } from "./ProjectReducer";
+import { getAllProjectAPI } from "./ProjectReducer";
 export interface UserLoginResult {
   id: number;
   email: string;
@@ -123,7 +123,7 @@ export const addUserApi = (addUser: AddUser) => {
         Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
       },
     });
-    dispatch(getProjectDetailAPI());
+    dispatch(getAllProjectAPI());
     console.log(result.data.content);
   };
 };
@@ -138,7 +138,7 @@ export const deleteUserApi = (deleteUser: AddUser) => {
         Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
       },
     });
-    dispatch(getProjectDetailAPI());
+    dispatch(getAllProjectAPI());
     console.log(result.data.content);
   };
 };

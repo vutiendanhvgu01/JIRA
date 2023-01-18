@@ -73,7 +73,6 @@ export interface ProjectState {
   getDetailProject: TypeProjectDetail;
 }
 
-
 const initialState = {
   categoryProject: [],
   createProject: null,
@@ -89,8 +88,7 @@ const initialState = {
     description: "string",
     categoryId: "2",
   },
-  getDetailProject: {}
-
+  getDetailProject: {},
 };
 
 const ProjectReducer = createSlice({
@@ -127,7 +125,7 @@ const ProjectReducer = createSlice({
     ) => {
       state.Priority = action.payload;
     },
-    getProjectDetailAction: (
+    getAllProjectAPIAction: (
       state: ProjectState,
       action: PayloadAction<ProjectDetail[]>
     ) => {
@@ -139,7 +137,6 @@ const ProjectReducer = createSlice({
     ) => {
       state.projectEdit = action.payload;
     },
-    
   },
 });
 
@@ -149,7 +146,7 @@ export const {
   getStatusTaskAction,
   getTaskTypeAction,
   getTaskPriorityAction,
-  getProjectDetailAction,
+  getAllProjectAPIAction,
   getProjectEditAction,
 } = ProjectReducer.actions;
 
@@ -169,7 +166,7 @@ export const getProjectCategoryApi = () => {
     dispatch(action);
   };
 };
-export const getProjectDetailAPI = () => {
+export const getAllProjectAPI = () => {
   return async (dispatch: DispatchType) => {
     const result = await axios({
       url: `https://jiranew.cybersoft.edu.vn/api/Project/getAllProject`,
@@ -181,7 +178,7 @@ export const getProjectDetailAPI = () => {
     console.log(result.data.content);
     const content: ProjectDetail[] = result.data.content;
     const action: PayloadAction<ProjectDetail[]> =
-      getProjectDetailAction(content);
+      getAllProjectAPIAction(content);
     dispatch(action);
   };
 };
@@ -269,7 +266,7 @@ export const updateProjectAPI = (projectUpdate: ProjectEdit) => {
       },
     });
     console.log(result.data.content);
-    const action = getProjectDetailAPI();
+    const action = getAllProjectAPI();
     dispatch({
       type: "CLOSE_DRAWER",
     });
@@ -289,7 +286,7 @@ export const deleteProjectAPI = (projectUpdate: number) => {
       },
     });
     console.log(result.data.content);
-    const action = getProjectDetailAPI();
+    const action = getAllProjectAPI();
 
     dispatch(action);
     notifiFucntion("success", "Delete project success");

@@ -21,7 +21,7 @@ import {
 import { DispatchType, RootState } from "../../redux/configStore";
 import {
   deleteProjectAPI,
-  getProjectDetailAPI,
+  getAllProjectAPI,
   getProjectEditAction,
 } from "../../redux/reducers/ProjectReducer";
 import { message, Popconfirm } from "antd";
@@ -64,7 +64,7 @@ const ProjectManagement = (props: Props) => {
   const searchRef = useRef(null);
   console.log(projectDetail);
   useEffect(() => {
-    const action = getProjectDetailAPI();
+    const action = getAllProjectAPI();
     dispatch(action);
   }, []);
   const handleChange: TableProps<DataType>["onChange"] = (
@@ -109,8 +109,10 @@ const ProjectManagement = (props: Props) => {
     {
       title: "projectName",
       dataIndex: "projectName",
-      render: (text,record,index) => {
-        return <NavLink to={`/home/projectdetail/${record.id}`}>{text}</NavLink>
+      render: (text, record, index) => {
+        return (
+          <NavLink to={`/home/projectdetail/${record.id}`}>{text}</NavLink>
+        );
       },
       key: "projectName",
       sorter: (item2, item1) => {
