@@ -70,7 +70,7 @@ export interface ProjectState {
   Priority: PriorityTask[];
   projectDetail: ProjectDetail[];
   projectEdit: ProjectEdit;
-  getDetailProject: TypeProjectDetail;
+  detailProjectById: TypeProjectDetail;
 }
 
 const initialState = {
@@ -88,7 +88,7 @@ const initialState = {
     description: "string",
     categoryId: "2",
   },
-  getDetailProject: {},
+  detailProjectById: null,
 };
 
 const ProjectReducer = createSlice({
@@ -137,6 +137,9 @@ const ProjectReducer = createSlice({
     ) => {
       state.projectEdit = action.payload;
     },
+    getDetailProjectById: (state:ProjectState,action:PayloadAction<TypeProjectDetail>) => {
+      state.detailProjectById = action.payload;
+    }
   },
 });
 
@@ -148,6 +151,7 @@ export const {
   getTaskPriorityAction,
   getAllProjectAPIAction,
   getProjectEditAction,
+  getDetailProjectById
 } = ProjectReducer.actions;
 
 export default ProjectReducer.reducer;
@@ -292,3 +296,11 @@ export const deleteProjectAPI = (projectUpdate: number) => {
     notifiFucntion("success", "Delete project success");
   };
 };
+export const getProjectDetailApi = (id:string) => {
+  return async (dispatch:DispatchType) => {
+    const result = await http.get(`https://jiranew.cybersoft.edu.vn/api/Project/getProjectDetail?id=${id}`)
+    console.log(result.data.content);
+    const action = getDetailProjectById(result.data.content)
+    dispatch(action);
+  }
+}

@@ -1,58 +1,65 @@
-export interface TypeProjectDetail {
-    lstTask:         ListTask[];
-    members:         Member[];
-    creator:         Creator;
-    id:              number;
-    projectName:     string;
-    description:     string;
-    projectCategory: projectCategory;
-    alias:           string;
+export type TypeProjectDetail  ={
+    lstTask: LstTask[];
+    members: Member[];
+    creator: Creator;
+    id: number;
+    projectName: string;
+    description: string;
+    projectCategory: Creator;
+    alias: string;
 }
 
-export interface projectCategory{
-    id:number;
-    name:string;
-
-}
-export interface Creator {
-    id:   number;
+export type Creator = {
+    id: number;
     name: string;
 }
-export interface ListTask {
-    lstTaskDeTail: LstTaskDeTail[]; 
-    statusId:      string;
-    statusName:    string;
-    alias:         string;
+
+export type LstTask = {
+    lstTaskDeTail: LstTaskDeTail[];
+    statusId: string;
+    statusName: string;
+    alias: string;
 }
-export interface LstTaskDeTail {
-    priorityTask:          PriorityTask;
-    taskTypeDetail:        TaskTypeDetail;
-    assigness:             any[];
-    lstComment:            any[];
-    taskId:                number;
-    taskName:              string;
-    alias:                 string;
-    description:           string;
-    statusId:              string;
-    originalEstimate:      number;
-    timeTrackingSpent:     number;
+
+export type LstTaskDeTail =  {
+    priorityTask: PriorityTask;
+    taskTypeDetail: TaskTypeDetail;
+    assigness: Assigness[];
+    lstComment: any[];
+    taskId: number;
+    taskName: string;
+    alias: string;
+    description: string;
+    statusId: string;
+    originalEstimate: number;
+    timeTrackingSpent: number;
     timeTrackingRemaining: number;
-    typeId:                number;
-    priorityId:            number;
-    projectId:             number;
-}
-export interface PriorityTask {
+    typeId: number;
     priorityId: number;
-    priority:   string;
+    projectId: number;
 }
-export interface TaskTypeDetail {
-    id:       number;
+
+export type Assigness =  {
+    id: number;
+    avatar: string;
+    name: string;
+    alias: string;
+}
+
+export type PriorityTask =  {
+    priorityId: number;
+    priority: string;
+}
+
+export type TaskTypeDetail  = {
+    id: number;
     taskType: string;
 }
-export interface Member {
-    userId:      number;
-    name:        string;
-    avatar:      string;
-    email:       string;
+
+export type Member  = {
+    userId: number;
+    name: string;
+    avatar: string;
+    email: string;
     phoneNumber: string;
 }
