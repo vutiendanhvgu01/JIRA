@@ -20,6 +20,7 @@ import CreateProject from "./Pages/CreateProject/CreateProject";
 import ProjectManagement from "./Pages/ProjectManagement/ProjectManagement";
 import MODALCYBERBUG from "./HOC/CyberBugHOC/MODALCYBERBUG";
 import EditProjectForm from "./Component/Form/EditProjectForm/EditProjectForm";
+import ProjectDetail from "./Pages/Detail/ProjectDetail";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -40,7 +41,9 @@ root.render(
             element={<ProjectManagement />}
           ></Route>
           {/* <Route path="drawer" element={<MODALCYBERBUG />}></Route> */}
-
+          <Route path='projectdetail'>
+            <Route path=":id" element = {<ProjectDetail/>}></Route>
+          </Route>
           <Route path="createTask" element={<CreateTask />}></Route>
         </Route>
       </Routes>

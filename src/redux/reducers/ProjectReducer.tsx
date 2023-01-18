@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { TypeProjectDetail } from "../../Pages/Detail/TypeProjectDetail";
 import { PriorityTask, Status, TypeTask } from "../../Pages/Task/TypeTask";
 import {
   TOKEN_CYBERSOFT,
@@ -69,7 +70,9 @@ export interface ProjectState {
   Priority: PriorityTask[];
   projectDetail: ProjectDetail[];
   projectEdit: ProjectEdit;
+  getDetailProject: TypeProjectDetail;
 }
+
 
 const initialState = {
   categoryProject: [],
@@ -86,6 +89,8 @@ const initialState = {
     description: "string",
     categoryId: "2",
   },
+  getDetailProject: {}
+
 };
 
 const ProjectReducer = createSlice({
@@ -98,7 +103,6 @@ const ProjectReducer = createSlice({
     ) => {
       state.categoryProject = action.payload;
     },
-
     getAllProjects: (
       state: ProjectState,
       action: PayloadAction<projectAll[]>
@@ -135,6 +139,7 @@ const ProjectReducer = createSlice({
     ) => {
       state.projectEdit = action.payload;
     },
+    
   },
 });
 

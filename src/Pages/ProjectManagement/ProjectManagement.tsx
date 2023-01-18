@@ -32,6 +32,7 @@ import {
   getUserApi,
 } from "../../redux/reducers/UserReducer";
 import { number } from "yup";
+import { NavLink } from "react-router-dom";
 
 type Props = {};
 interface DataType {
@@ -108,6 +109,9 @@ const ProjectManagement = (props: Props) => {
     {
       title: "projectName",
       dataIndex: "projectName",
+      render: (text,record,index) => {
+        return <NavLink to={`/home/projectdetail/${record.id}`}>{text}</NavLink>
+      },
       key: "projectName",
       sorter: (item2, item1) => {
         let projectName1 = item1.projectName.trim().toLowerCase();

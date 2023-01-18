@@ -106,6 +106,7 @@ const Login = (props: Props) => {
 
             <div className="form-group">
               <Button
+              onSubmit={form.handleSubmit}
                 htmlType="submit"
                 size="large"
                 className="mt-5"
