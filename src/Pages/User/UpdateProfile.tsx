@@ -27,15 +27,15 @@ const UpdateProfile: React.FC = () => {
       phoneNumber: userLogin.phoneNumber,
       passWordConfirm: '',
     },
-    // validationSchema: yup.object().shape({
-    //   email:yup.string().required('email cannot be blank').email('email is invalid'),
-    //   password: yup.string().required("password cannot be blank!"),
-    //   name: yup.string().required("name cannot be blank!"),
-    //   phone: yup.string().required("phone cannot be blank!"),
-    //   passwordConfirm: yup
-    //     .string()
-    //     .oneOf([yup.ref("password"), null], "Passwords must match"),
-    // }),
+    validationSchema: yup.object().shape({
+      email:yup.string().required('email cannot be blank').email('email is invalid'),
+      passWord: yup.string().required("password cannot be blank!"),
+      name: yup.string().required("name cannot be blank!"),
+      phoneNumber: yup.string().required("phone cannot be blank!"),
+      passwordConfirm: yup
+        .string()
+        .oneOf([yup.ref("password"), null], "Passwords must match"),
+    }),
     onSubmit: (value: any) => {
 
       if (value.passWord !== value.passWordConfirm) {
@@ -65,40 +65,41 @@ const UpdateProfile: React.FC = () => {
             <div className="profile-content">
               <div className="form-group">
                 <p>
-                  Id <span className="required-icon">*</span>
+                  Id 
                 </p>
-                <Input defaultValue={userLogin.id} name='id' onChange={form.handleChange}  disabled={true}/>
+                <Input defaultValue={userLogin.id} name='id' onChange={form.handleChange}  disabled={true}onBlur={form.handleBlur}/>
               </div>
               <div className="form-group">
                 <p>
-                  Email <span className="required-icon">*</span>
+                  Email <span className="required-icon text-danger">*</span>
                 </p>
-                <Input name='email' defaultValue={userLogin.email} onChange={form.handleChange} />
+                <Input name='email' defaultValue={userLogin.email} onChange={form.handleChange} onBlur={form.handleBlur}/>
 
               </div>
               <div className="form-group">
                 <p>
-                  Name <span className="required-icon">*</span>
+                  Name <span className="required-icon text-danger">*</span>
                 </p>
-                <Input name='name' defaultValue={userLogin.name} onChange={form.handleChange} />
+                <Input name='name' defaultValue={userLogin.name} onChange={form.handleChange} onBlur={form.handleBlur} />
               </div>
               <div className="form-group">
                 <p>
-                  Phone number <span className="required-icon">*</span>
+                  Phone number <span className="required-icon text-danger">*</span>
                 </p>
-                <Input name='phoneNumber' defaultValue={userLogin.phoneNumber} onChange={form.handleChange} />
+                <Input name='phoneNumber' defaultValue={userLogin.phoneNumber} onChange={form.handleChange} onBlur={form.handleBlur} />
+             
               </div>
               <div className="form-group">
                 <p>
-                  Password <span className="required-icon">*</span>
+                  Password <span className="required-icon text-danger">*</span>
                 </p>
-                <Input.Password name='passWord' placeholder="Enter your password" onChange={form.handleChange} />
+                <Input.Password name='passWord' placeholder="Enter your password" onChange={form.handleChange} onBlur={form.handleBlur}/>
               </div>
               <div className="form-group">
                 <p>
-                  Password confirmation <span className="required-icon">*</span>
+                  Password confirmation <span className="required-icon text-danger">*</span>
                 </p>
-                <Input.Password name='passWordConfirm' placeholder="Enter your password again" onChange={form.handleChange} />
+                <Input.Password name='passWordConfirm' placeholder="Enter your password again" onChange={form.handleChange} onBlur={form.handleBlur}/>
               </div>
             </div>
           </div>

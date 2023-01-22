@@ -33,8 +33,8 @@ const ProjectDetail = (props: Props) => {
           <h5>{detailProjectById?.projectName}</h5>
           <div className="projectDetail-wrap">
           <Search placeholder="input search text" onSearch={onSearch} style={{ width: 250, marginTop: 20 }} />
-          {detailProjectById.members?.map((member:Member) => {
-              return <Avatar  src={member?.avatar}>
+          {detailProjectById.members?.map((member:Member,index:number) => {
+              return <Avatar key={index} src={member?.avatar}>
             
                </Avatar>
           })}
@@ -46,6 +46,10 @@ const ProjectDetail = (props: Props) => {
           
         </div>
         <div className="projectDetail-body row mt-4">
+
+          {/* {detailProjectById?.map((item:TypeProjectDetail,index:number)=>{
+            return 'helo'
+          })} */}
           <div className="card-wrap col-3">
             <div className="card backlog">
 
@@ -56,36 +60,7 @@ const ProjectDetail = (props: Props) => {
             </div>
 
           </div>
-          <div className="card-wrap col-3">
-            <div className="card selectfordev">
-
-              <div className="card-header">
-                <p className='card-title'>SELECTED FOR DEVLOPMENT</p>
-              </div>
-              <div className="card-body"></div>
-            </div>
-
-          </div>
-          <div className="card-wrap col-3">
-            <div className="card inprogess">
-
-              <div className="card-header">
-                <p className='card-title'>IN PROGESS</p>
-              </div>
-              <div className="card-body"></div>
-            </div>
-
-          </div>
-          <div className="card-wrap col-3">
-            <div className="card done">
-
-              <div className="card-header">
-                <p className='card-title'>DONE</p>
-              </div>
-              <div className="card-body"></div>
-            </div>
-
-          </div>
+      
 
 
         </div>
