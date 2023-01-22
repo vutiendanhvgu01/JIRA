@@ -52,15 +52,15 @@ const CreateTask: React.FC = (props: Props) => {
   const form = useFormik({
     initialValues: {
       projectId: "",
-      statusId: "",
-      priorityId: "",
-      taskType: "",
+      statusId: statusTask[0].statusId,
+      priorityId: Priority[0].priorityId,
+      taskType: taskType[0].id,
       taskName: "",
-      description: "",
+      description: '',
     },
     validationSchema: yup.object().shape({}),
     onSubmit: (values) => {
-      console.log(editorRef.current.getContent());
+      values.description = editorRef.current.getContent()
       console.log(values);
     },
   });

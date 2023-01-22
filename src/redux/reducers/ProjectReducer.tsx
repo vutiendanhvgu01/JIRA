@@ -76,10 +76,10 @@ export interface ProjectState {
 const initialState = {
   categoryProject: [],
   createProject: null,
-  allProjects: [],
-  statusTask: [],
-  taskType: [],
-  Priority: [],
+  allProjects: null,
+  statusTask: null,
+  taskType: null,
+  Priority: null,
   projectDetail: [],
   projectEdit: {
     id: 0,

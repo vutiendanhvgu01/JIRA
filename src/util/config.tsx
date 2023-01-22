@@ -38,7 +38,7 @@ export const { saveStore, saveStoreJson, getStore, getStoreJson, removeStore } =
 
 export const http = axios.create({
     baseURL:'https://jiranew.cybersoft.edu.vn',
-    timeout:30000
+    timeout:3000
 })
 
 http.interceptors.request.use((config:any) => {
