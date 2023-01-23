@@ -6,20 +6,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/configStore";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { getAllProject, projectAll } from "../../redux/reducers/ProjectReducer";
+import { createTaskApi, getAllProject, projectAll } from "../../redux/reducers/ProjectReducer";
 import { PriorityTask, Status, TypeTask } from "./TypeTask";
 import "../../Assets/scss/pages/Task/_createTask.scss";
 import { MessageOutlined, CaretDownOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { getUserByProjectIdApi, UserByProjectId } from "../../redux/reducers/UserReducer";
 
 const optionsAssigner: SelectProps["options"] = [];
 type Props = {};
 
 const CreateTask: React.FC = (props: Props) => {
   const dispatch: DispatchType = useDispatch();
+  const { allProjects, statusTask, taskType, Priority } = useSelector(
+    (state: RootState) => {
+      return state.ProjectReducer;
+    }
+  );
+  const {userByProjectId } = useSelector(
+    (state: RootState) => {
+      return state.UserReducer;
+    }
+  );
   useEffect(() => {
-    const action = getAllProject();
-    dispatch(action);
+    const action1 = getAllProject();
+    dispatch(action1);
+    const action = getUserByProjectIdApi(allProjects[0].id.toString())
+    dispatch(action)
+
+
   }, []);
   const assignRef = useRef<string>(null);
   const editorRef = useRef(null);
@@ -28,14 +43,11 @@ const CreateTask: React.FC = (props: Props) => {
     timeTrackingSpent:0,
     timeTrackingRemaining:0,
   })
-  const { allProjects, statusTask, taskType, Priority } = useSelector(
-    (state: RootState) => {
-      return state.ProjectReducer;
-    }
-  );
+
   const handleChangeAntd = (value: string) => {
     console.log(value);
     assignRef.current = value;
+    form.setFieldValue('listUserAsign',value)
   };
   if (editorRef.current) {
     editorValue.current = editorRef.current
@@ -45,35 +57,39 @@ const CreateTask: React.FC = (props: Props) => {
       .replace(/<(\/)?p[^>]*>/g, "");
   }
 
-  interface CreateTypeTask {
-    listUserAsign?: number[];
-    taskName?: string;
-    description?: string;
-    statusId?: string;
-    originalEstimate?: number;
-    timeTrackingSpent?: number;
-    timeTrackingRemaining?: number;
-    projectId?: number;
-    typeId?: number;
-    priorityId?: number;
-  }
+
 
   const form = useFormik({
     initialValues: {
-      projectId: allProjects[0].id.toString(),
-      statusId: statusTask[0].statusId,
-      priorityId: Priority[0].priorityId,
-      taskType: taskType[0].id,
+      listUserAsign:[0],
       taskName: "",
       description: '',
+      statusId: statusTask[0].statusId,
+      originalEstimate:1,
       timeTrackingSpent: 1,
       timeTrackingRemaining: 1,
-      originalEstimate:1,
+      projectId: allProjects[0].id,
+      typeId: 1,
+      priorityId: Priority[0].priorityId,
     },
     validationSchema: yup.object().shape({}),
     onSubmit: (values) => {
       values.description = editorRef.current.getContent()
-      console.log(values);
+      const data = {
+        listUserAsign:values.listUserAsign,
+        taskName: values.taskName,
+        description: values.description,
+        statusId: values.statusId.toString(),
+        originalEstimate:Number(values.originalEstimate),
+        timeTrackingSpent: Number(values.timeTrackingSpent),
+        timeTrackingRemaining: Number(values.timeTrackingRemaining),
+        projectId: Number(values.projectId),
+        typeId: Number(values.typeId),
+        priorityId: Number(values.priorityId),
+      }
+      console.log(data);
+      const action = createTaskApi(data);
+      dispatch(action)
     },
   });
 
@@ -90,6 +106,15 @@ const CreateTask: React.FC = (props: Props) => {
     })
     form.setFieldValue(name, Number(value))
    };
+   const handleChangeProject = (e) => {
+  
+    const value = e.target.value
+    const action = getUserByProjectIdApi(value)
+    dispatch(action)
+    console.log(value)
+    form.setFieldValue('projectId',Number(value))
+    console.log(userByProjectId)
+   }
   return (
     <>
       <div className="createTask-content">
@@ -101,7 +126,7 @@ const CreateTask: React.FC = (props: Props) => {
               <select
                 className="w-100 createTask-select"
                 name="projectId"
-                onChange={form.handleChange}
+                onChange={handleChangeProject}
                 onBlur={form.handleBlur}
               >
                 {allProjects?.map((item: projectAll,index:number) => {
@@ -236,13 +261,16 @@ const CreateTask: React.FC = (props: Props) => {
             <p className="title-createTask">Assigners</p>
             <Select
               mode="tags"
+              
               style={{ width: "100%" }}
               onChange={handleChangeAntd}
               tokenSeparators={[","]}
-              options={[
-                { value: 1, label: 1 },
-                { value: 2, label: 2 },
-              ]}
+              options = {userByProjectId?.map((user:UserByProjectId) => {
+                return {
+                  value: user.userId,
+                  label:user.name
+                }
+              })}
             />
           </div>
           <Button type="primary" htmlType="submit" size="large">

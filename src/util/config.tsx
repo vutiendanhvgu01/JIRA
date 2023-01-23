@@ -71,7 +71,7 @@ http.interceptors.response.use((res)=>{
             removeStore(ACCESS_TOKEN);
             removeStore(USER_LOGIN);
             //Chuyển hướng trang dạng f5
-            window.location.href = '/login';
+            window.location.href = '';
  
         history.push('/login');
     }

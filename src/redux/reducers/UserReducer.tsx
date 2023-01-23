@@ -45,16 +45,27 @@ export interface UserUpdate {
   name: string;
   phoneNumber: string;
 }
+export interface UserByProjectId {
+  userId:      number;
+  name:        string;
+  avatar:      string;
+  email:       string;
+  phoneNumber: string;
+}
 export interface UserState {
   userLogin: UserLoginResult;
   user: USER[];
   addUser: AddUser;
   ModalOpen: boolean;
+  userByProjectId: UserByProjectId[]
 }
+
 const initialState = {
   userLogin: getStoreJson(USER_LOGIN) ? getStoreJson(USER_LOGIN) : null,
   user: [],
   ModalOpen: false,
+  userByProjectId:[]
+
 };
 
 const UserReducer = createSlice({
@@ -70,10 +81,14 @@ const UserReducer = createSlice({
     setModalOpen: (state: UserState, action: PayloadAction<boolean>) => {
       state.ModalOpen = action.payload;
     },
-  },
-});
+    getUserByProjectIdAction: (state: UserState, action: PayloadAction<UserByProjectId[]>) => {
+      state.userByProjectId = action.payload;
+    },
+  }
+}
+);
 
-export const { loginAction, getUserAction, setModalOpen } = UserReducer.actions;
+export const { loginAction, getUserAction, setModalOpen,getUserByProjectIdAction } = UserReducer.actions;
 
 export default UserReducer.reducer;
 
@@ -158,3 +173,12 @@ export const editUser = (value: UserUpdate) => {
     dispatch(userLoginAction);
   };
 };
+
+export const getUserByProjectIdApi = (id:string) => {
+  return async (dispatch:DispatchType) => {
+    const result = await http.get(`/api/Users/getUserByProjectId?idProject=${id}`)
+
+    const action = getUserByProjectIdAction(result.data.content)
+    dispatch(action)
+  }
+}

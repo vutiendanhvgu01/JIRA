@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { history } from "../..";
 import { TypeProjectDetail } from "../../Pages/Detail/TypeProjectDetail";
 import { PriorityTask, Status, TypeTask } from "../../Pages/Task/TypeTask";
 import {
@@ -72,6 +73,19 @@ export interface ProjectState {
   projectEdit: ProjectEdit;
   detailProjectById: TypeProjectDetail;
 }
+export interface CreateTypeTask {
+  listUserAsign?: number[];
+  taskName?: string;
+  description?: string;
+  statusId?: string;
+  originalEstimate?: number;
+  timeTrackingSpent?: number;
+  timeTrackingRemaining?: number;
+  projectId?: number;
+  typeId?: number | string;
+  priorityId?: number;
+  createTask?: CreateTypeTask;
+}
 
 const initialState = {
   categoryProject: [],
@@ -89,6 +103,7 @@ const initialState = {
     categoryId: "2",
   },
   detailProjectById: null,
+  createTask:null,
 };
 
 const ProjectReducer = createSlice({
@@ -139,7 +154,8 @@ const ProjectReducer = createSlice({
     },
     getDetailProjectById: (state:ProjectState,action:PayloadAction<TypeProjectDetail>) => {
       state.detailProjectById = action.payload;
-    }
+    },
+ 
   },
 });
 
@@ -151,11 +167,26 @@ export const {
   getTaskPriorityAction,
   getAllProjectAPIAction,
   getProjectEditAction,
-  getDetailProjectById
+  getDetailProjectById,
 } = ProjectReducer.actions;
 
 export default ProjectReducer.reducer;
-
+export const createTaskApi = (data: CreateTypeTask) => {
+  return async () => {
+    const result = await axios({
+      url: "https://jiranew.cybersoft.edu.vn/api/Project/createTask",
+      method: "post",
+      data: data,
+      headers: {
+        TokenCybersoft: TOKEN_CYBERSOFT,
+        Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
+      },
+    });
+    console.log(result.data.content);
+    notifiFucntion("success", "Create task success");
+    history.push(`/home/projectdetail/${data.projectId}`)
+  };
+};
 export const getProjectCategoryApi = () => {
   return async (dispatch: DispatchType) => {
     const result = await axios({
