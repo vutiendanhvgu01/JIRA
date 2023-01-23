@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps, MenuTheme } from "antd";
 import { Layout, Menu, theme, Switch } from "antd";
 import { history } from "..";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import {
   AppstoreOutlined,
   MailOutlined,
@@ -16,6 +16,7 @@ import { getAllProject } from "../redux/reducers/ProjectReducer";
 import { DispatchType, RootState } from "../redux/configStore";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "./Sidebar";
+import { ACCESS_TOKEN, removeStore, USER_LOGIN } from "../util/config";
 
 const { Header, Sider, Content } = Layout;
 
@@ -121,9 +122,19 @@ const HomeTemplate: React.FC = (props: Props) => {
         >
           <div className={`profile-info`} id="home-info">
             <div className={classNameFunction(theme)}>
-              <img src={userLogin.avatar} alt="..." />
-              <h4>{userLogin.name}</h4>
-              <p>{userLogin.email}</p>
+              <img src={userLogin?.avatar} alt="..." />
+              <h4>{userLogin?.name}</h4>
+              <p>{userLogin?.email}</p>
+              <p
+                onClick={() => {
+                  removeStore(ACCESS_TOKEN);
+                  removeStore(USER_LOGIN);
+                  window.location.reload();
+                  history.push("/");
+                }}
+              >
+                Log out
+              </p>
             </div>
           </div>
           <div
