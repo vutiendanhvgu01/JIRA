@@ -1,12 +1,12 @@
-import { Input, Select } from "antd";
-import React, { useRef } from "react";
+import { Input, InputNumber, Select, Slider } from "antd";
+import React, { useRef, useState,useEffect } from "react";
 import type { SelectProps } from "antd";
 import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/configStore";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { projectAll } from "../../redux/reducers/ProjectReducer";
+import { getAllProject, projectAll } from "../../redux/reducers/ProjectReducer";
 import { PriorityTask, Status, TypeTask } from "./TypeTask";
 import "../../Assets/scss/pages/Task/_createTask.scss";
 import { MessageOutlined, CaretDownOutlined } from "@ant-design/icons";
@@ -16,9 +16,18 @@ const optionsAssigner: SelectProps["options"] = [];
 type Props = {};
 
 const CreateTask: React.FC = (props: Props) => {
+  const dispatch: DispatchType = useDispatch();
+  useEffect(() => {
+    const action = getAllProject();
+    dispatch(action);
+  }, []);
   const assignRef = useRef<string>(null);
   const editorRef = useRef(null);
   const editorValue = useRef(null);
+  const [timeTracking,setTimeTracking] = useState({
+    timeTrackingSpent:0,
+    timeTrackingRemaining:0,
+  })
   const { allProjects, statusTask, taskType, Priority } = useSelector(
     (state: RootState) => {
       return state.ProjectReducer;
@@ -36,7 +45,7 @@ const CreateTask: React.FC = (props: Props) => {
       .replace(/<(\/)?p[^>]*>/g, "");
   }
 
-  interface formTypeTask {
+  interface CreateTypeTask {
     listUserAsign?: number[];
     taskName?: string;
     description?: string;
@@ -51,12 +60,15 @@ const CreateTask: React.FC = (props: Props) => {
 
   const form = useFormik({
     initialValues: {
-      projectId: "",
+      projectId: allProjects[0].id.toString(),
       statusId: statusTask[0].statusId,
       priorityId: Priority[0].priorityId,
       taskType: taskType[0].id,
       taskName: "",
       description: '',
+      timeTrackingSpent: 1,
+      timeTrackingRemaining: 1,
+      originalEstimate:1,
     },
     validationSchema: yup.object().shape({}),
     onSubmit: (values) => {
@@ -65,8 +77,19 @@ const CreateTask: React.FC = (props: Props) => {
     },
   });
 
-  const handleEdit = () => {};
+  const handleChangeInput = (e) => {
+    const value= e.target.value
+    const name = e.target.name
+    console.log(name,value)
+    setTimeTracking((prev) => {
+      return {
+        ...prev,
+        [name]: value,
 
+      }
+    })
+    form.setFieldValue(name, Number(value))
+   };
   return (
     <>
       <div className="createTask-content">
@@ -81,8 +104,8 @@ const CreateTask: React.FC = (props: Props) => {
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
               >
-                {allProjects?.map((item: projectAll) => {
-                  return <option value={item.id}>{item.projectName}</option>;
+                {allProjects?.map((item: projectAll,index:number) => {
+                  return <option key={index} value={item.id}>{item.projectName}</option>;
                 })}
               </select>
               <CaretDownOutlined className="arrowDown" />
@@ -106,9 +129,9 @@ const CreateTask: React.FC = (props: Props) => {
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
               >
-                {statusTask?.map((item: Status) => {
+                {statusTask?.map((item: Status,index:number) => {
                   return (
-                    <option value={item.statusId}>{item.statusName}</option>
+                    <option key={index} value={item.statusId}>{item.statusName}</option>
                   );
                 })}
               </select>
@@ -127,9 +150,9 @@ const CreateTask: React.FC = (props: Props) => {
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
                     >
-                      {Priority?.map((item: PriorityTask) => {
+                      {Priority?.map((item: PriorityTask,index:number) => {
                         return (
-                          <option value={item.priorityId}>
+                          <option key={index} value={item.priorityId}>
                             {item.priority}
                           </option>
                         );
@@ -151,13 +174,41 @@ const CreateTask: React.FC = (props: Props) => {
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
                     >
-                      {taskType?.map((item: TypeTask) => {
-                        return <option value={item.id}>{item.taskType}</option>;
+                      {taskType?.map((item: TypeTask,index:number) => {
+                        return <option key={index} value={item.id}>{item.taskType}</option>;
                       })}
                     </select>
                     <CaretDownOutlined className="arrowDown" />
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="timeTrackingWrap">
+              <p>Time Tracking</p>
+              <Slider  value={Number(timeTracking.timeTrackingSpent)} min={0} max={Number(timeTracking.timeTrackingSpent)+ Number(timeTracking.timeTrackingRemaining)} />
+              <div className="row mb-4">
+                <div className="col-6 text-left">
+                  {timeTracking.timeTrackingSpent}h logged
+                </div>
+                <div className="col-6 text-end">
+                  {timeTracking.timeTrackingSpent}h remaining
+                </div>
+              </div>
+              <div className="time-estimate row">
+              <div className="col-4">
+                  <p>Original Estimate</p>
+                  <input type='number' className=" w-100 py-2 ps-3" name='originalEstimate' onChange={handleChangeInput} onBlur={form.handleBlur}  min={0} max={100000} defaultValue={0} />
+                </div>
+                <div className="col-4">
+                  <p>Time spent {`(hours)`}</p>
+                  <input type='number' onChange={handleChangeInput} onBlur={form.handleBlur} className=' w-100 py-2 ps-3' name='timeTrackingSpent' min={0} max={100000} defaultValue={0} />
+
+                </div>
+                <div className="col-4">
+                  <p>Time remaining {`(hours)`}</p>
+                  <input type='number' className="w-100  py-2 ps-3" name='timeTrackingRemaining' onChange={handleChangeInput} onBlur={form.handleBlur}  min={0} max={100000} defaultValue={0} />
+                </div>
+            
               </div>
             </div>
           </div>
@@ -201,9 +252,7 @@ const CreateTask: React.FC = (props: Props) => {
             danger={true}
             htmlType="button"
             size="large"
-            onClick={() => {
-              handleEdit();
-            }}
+         
           >
             Edit
           </Button>
