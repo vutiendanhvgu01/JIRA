@@ -125,16 +125,18 @@ const HomeTemplate: React.FC = (props: Props) => {
               <img src={userLogin?.avatar} alt="..." />
               <h4>{userLogin?.name}</h4>
               <p>{userLogin?.email}</p>
-              <p
+              <button type='button'
+              className="btn btn-primary"
                 onClick={() => {
                   removeStore(ACCESS_TOKEN);
                   removeStore(USER_LOGIN);
-                  window.location.reload();
-                  history.push("/");
+                 
+                 
                 }}
               >
-                Log out
-              </p>
+                 <NavLink to='/'>Log out</NavLink>
+              </button>
+             
             </div>
           </div>
           <div
