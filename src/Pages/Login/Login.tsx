@@ -14,28 +14,32 @@ import * as yup from "yup";
 import { loginAsyncApi } from "../../redux/reducers/UserReducer";
 import { useDispatch } from "react-redux";
 import { DispatchType } from "../../redux/configStore";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 const { Sider, Content } = Layout;
 type Props = {};
 export interface UserLoginModel {
-  email:string,
-  passWord:string,
+  email: string;
+  passWord: string;
 }
 
 const Login = (props: Props) => {
   // const handleLogin = () => {
   //   history.push("/home");
   // };
-  const [{width,height},setSize] =useState({width:window.innerWidth,height:window.innerHeight})
-  useEffect(()=>{
-    window.onresize=()=>{
+  const [{ width, height }, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  useEffect(() => {
+    window.onresize = () => {
       setSize({
         width: window.innerWidth,
         height: window.innerHeight,
-      })
-    }
-  },[])
-  const dispatch:DispatchType = useDispatch();
+      });
+    };
+  }, []);
+  const dispatch: DispatchType = useDispatch();
   const form = useFormik<UserLoginModel>({
     initialValues: {
       email: "",
@@ -48,10 +52,10 @@ const Login = (props: Props) => {
         .email("Email is invalid!"),
       passWord: yup.string().required("Password cannot be blank!"),
     }),
-    onSubmit: (values:UserLoginModel) => {
+    onSubmit: (values: UserLoginModel) => {
       console.log(values);
-      const action = loginAsyncApi(values)
-      dispatch(action)
+      const action = loginAsyncApi(values);
+      dispatch(action);
     },
   });
 
@@ -61,12 +65,13 @@ const Login = (props: Props) => {
         <Sider
           style={{
             height: height,
-            backgroundImage: `url(https://picsum.photos/${Math.round(width/2)}/${height/2})`,
+            backgroundImage: `url(https://picsum.photos/${Math.round(
+              width / 2
+            )}/${height / 2})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
           }}
-          width={width/2}
-          
+          width={width / 2}
         ></Sider>
         <Content>
           <form
@@ -103,10 +108,15 @@ const Login = (props: Props) => {
                 <p className="text-danger">{form.errors.passWord}</p>
               )}
             </div>
-
+            <div className="form-group pt-5">
+              <p>
+                Do not have an account yet!
+                <NavLink to="/register"> Register now !</NavLink>
+              </p>
+            </div>
             <div className="form-group">
               <Button
-              onSubmit={form.handleSubmit}
+                onSubmit={form.handleSubmit}
                 htmlType="submit"
                 size="large"
                 className="mt-5"

@@ -46,10 +46,16 @@ export interface UserUpdate {
   phoneNumber: string;
 }
 export interface UserByProjectId {
-  userId:      number;
-  name:        string;
-  avatar:      string;
-  email:       string;
+  userId: number;
+  name: string;
+  avatar: string;
+  email: string;
+  phoneNumber: string;
+}
+export interface RegisterModel {
+  email: string;
+  passWord: string;
+  name: string;
   phoneNumber: string;
 }
 export interface UserState {
@@ -57,15 +63,16 @@ export interface UserState {
   user: USER[];
   addUser: AddUser;
   ModalOpen: boolean;
-  userByProjectId: UserByProjectId[]
+  userByProjectId: UserByProjectId[];
+  userRegister: RegisterModel;
 }
 
 const initialState = {
   userLogin: getStoreJson(USER_LOGIN) ? getStoreJson(USER_LOGIN) : null,
   user: [],
   ModalOpen: false,
-  userByProjectId:[]
-
+  userByProjectId: [],
+  userRegister: {},
 };
 
 const UserReducer = createSlice({
@@ -81,14 +88,21 @@ const UserReducer = createSlice({
     setModalOpen: (state: UserState, action: PayloadAction<boolean>) => {
       state.ModalOpen = action.payload;
     },
-    getUserByProjectIdAction: (state: UserState, action: PayloadAction<UserByProjectId[]>) => {
+    getUserByProjectIdAction: (
+      state: UserState,
+      action: PayloadAction<UserByProjectId[]>
+    ) => {
       state.userByProjectId = action.payload;
     },
-  }
-}
-);
+  },
+});
 
-export const { loginAction, getUserAction, setModalOpen,getUserByProjectIdAction } = UserReducer.actions;
+export const {
+  loginAction,
+  getUserAction,
+  setModalOpen,
+  getUserByProjectIdAction,
+} = UserReducer.actions;
 
 export default UserReducer.reducer;
 
@@ -174,11 +188,26 @@ export const editUser = (value: UserUpdate) => {
   };
 };
 
-export const getUserByProjectIdApi = (id:string) => {
-  return async (dispatch:DispatchType) => {
-    const result = await http.get(`/api/Users/getUserByProjectId?idProject=${id}`)
+export const getUserByProjectIdApi = (id: string) => {
+  return async (dispatch: DispatchType) => {
+    const result = await http.get(
+      `/api/Users/getUserByProjectId?idProject=${id}`
+    );
 
-    const action = getUserByProjectIdAction(result.data.content)
-    dispatch(action)
-  }
-}
+    const action = getUserByProjectIdAction(result.data.content);
+    dispatch(action);
+  };
+};
+export const registerApi = (userRegister: RegisterModel) => {
+  return async (dispatch: DispatchType) => {
+    const result = await axios({
+      url: "https://jiranew.cybersoft.edu.vn/api/Users/signup",
+      method: "post",
+      data: userRegister,
+      headers: {
+        TokenCybersoft: TOKEN_CYBERSOFT,
+      },
+    });
+    console.log(result.data.content);
+  };
+};
