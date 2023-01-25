@@ -276,14 +276,6 @@ const CreateTask: React.FC = (props: Props) => {
           <Button type="primary" htmlType="submit" size="large">
             Submit
           </Button>
-          <Button
-            danger={true}
-            htmlType="button"
-            size="large"
-         
-          >
-            Edit
-          </Button>
         </form>
       </div>
     </>

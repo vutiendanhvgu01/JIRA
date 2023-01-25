@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { DispatchType, RootState } from '../../redux/configStore'
 import { getProjectDetailApi } from '../../redux/reducers/ProjectReducer'
-import { Member, TypeProjectDetail, LstTask,LstTaskDeTail } from './TypeProjectDetail'
+import { Member, TypeProjectDetail, LstTask, LstTaskDeTail } from './TypeProjectDetail'
 import { Avatar, Input, Space } from 'antd';
 import ReactHtmlParser, {
   processNodes,
@@ -54,13 +54,26 @@ const ProjectDetail = (props: Props) => {
                   <p className='card-title'>{item?.statusName}</p>
                 </div>
                 <div className="card-body">
-                 
-                  {item?.lstTaskDeTail.map((lstTask:LstTaskDeTail)=> {
-                    return <div className=' taskDetail'>{ReactHtmlParser(lstTask?.description)}</div>
-                  }) }
+                  {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
+                    return <li key={index} className="list-group-item p-4" style={{ cursor: 'pointer' }}>
+                      <p>{ReactHtmlParser(lstTask?.taskName)}</p>
+                      <div className="block d-flex" style={{justifyContent:'space-between'}} >
+                        <div className="block-left">
+                          <i className="fa fa-bookmark "></i>
+                          <i className="fa fa-arrow-up ms-2"></i>
+                        </div>
+                        <div className="block-right">
+                          <div className="avatar-group">
+                            {lstTask?.assigness.map((memberAssign) => {
+                              return <Avatar className='avatar' src={memberAssign?.avatar}>
+                              </Avatar>
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </li>
 
-              
-               
+                  })}
                 </div>
               </div>
             </div>
