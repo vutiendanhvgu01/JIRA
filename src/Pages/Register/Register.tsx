@@ -1,32 +1,23 @@
-import React from "react";
+import { Button, Input } from "antd";
+import React, { useEffect, useState } from "react";
 import { Layout } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  FacebookOutlined,
-  TwitterOutlined,
-} from "@ant-design/icons";
-import Input from "antd/es/input/Input";
-import { Button } from "antd";
-// import { history } from "../..";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { loginAsyncApi } from "../../redux/reducers/UserReducer";
-import { useDispatch } from "react-redux";
 import { DispatchType } from "../../redux/configStore";
-import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { registerApi } from "../../redux/reducers/UserReducer";
 import { NavLink } from "react-router-dom";
-const { Sider, Content } = Layout;
 type Props = {};
-export interface UserLoginModel {
+export interface RegisterModel {
   email: string;
   passWord: string;
+  name: string;
+  phoneNumber: string;
 }
 
-const Login = (props: Props) => {
-  // const handleLogin = () => {
-  //   history.push("/home");
-  // };
+const { Sider, Content } = Layout;
+const Register = (props: Props) => {
+  const dispatch: DispatchType = useDispatch();
   const [{ width, height }, setSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -39,11 +30,12 @@ const Login = (props: Props) => {
       });
     };
   }, []);
-  const dispatch: DispatchType = useDispatch();
-  const form = useFormik<UserLoginModel>({
+  const form = useFormik<RegisterModel>({
     initialValues: {
       email: "",
       passWord: "",
+      name: "",
+      phoneNumber: "",
     },
     validationSchema: yup.object().shape({
       email: yup
@@ -51,11 +43,12 @@ const Login = (props: Props) => {
         .required("Email cannot be blank!")
         .email("Email is invalid!"),
       passWord: yup.string().required("Password cannot be blank!"),
+      name: yup.string().required("Name can not be blank!"),
+      phoneNumber: yup.string().required("Phone number can not be blank!"),
     }),
-    onSubmit: (values: UserLoginModel) => {
+    onSubmit: (values: RegisterModel) => {
       console.log(values);
-      const action = loginAsyncApi(values);
-      dispatch(action);
+      dispatch(registerApi(values));
     },
   });
 
@@ -75,17 +68,16 @@ const Login = (props: Props) => {
         ></Sider>
         <Content>
           <form
-            onSubmit={form.handleSubmit}
             className="container d-flex justify-content-center align-items-center"
             style={{ flexDirection: "column", paddingTop: "200px" }}
+            onSubmit={form.handleSubmit}
           >
-            <h3>Login</h3>
+            <h3>Sign up</h3>
             <div className="form-group">
-              <p>User name</p>
+              <p>Email</p>
               <Input
                 name="email"
                 size="large"
-                prefix={<UserOutlined />}
                 placeholder="email"
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
@@ -99,7 +91,6 @@ const Login = (props: Props) => {
               <Input
                 name="passWord"
                 size="large"
-                prefix={<LockOutlined />}
                 placeholder="password"
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
@@ -108,10 +99,36 @@ const Login = (props: Props) => {
                 <p className="text-danger">{form.errors.passWord}</p>
               )}
             </div>
+            <div className="form-group">
+              <p>Name</p>
+              <Input
+                name="name"
+                size="large"
+                placeholder="Name"
+                onChange={form.handleChange}
+                onBlur={form.handleBlur}
+              />
+              {form.errors.name && (
+                <p className="text-danger">{form.errors.name}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <p>Phone number</p>
+              <Input
+                name="phoneNumber"
+                size="large"
+                placeholder="Phone number"
+                onChange={form.handleChange}
+                onBlur={form.handleBlur}
+              />
+              {form.errors.phoneNumber && (
+                <p className="text-danger">{form.errors.phoneNumber}</p>
+              )}
+            </div>
             <div className="form-group pt-5">
               <p>
-                Do not have an account yet!
-                <NavLink to="/register"> Register now !</NavLink>
+                Already have an account!
+                <NavLink to="/"> Log in now !</NavLink>
               </p>
             </div>
             <div className="form-group">
@@ -125,24 +142,8 @@ const Login = (props: Props) => {
                 //   handleLogin();
                 // }}
               >
-                Login
+                Submit
               </Button>
-            </div>
-            <div className="socail mt-3 d-flex">
-              <Button
-                shape="circle"
-                className="font-weight-bold"
-                style={{ backgroundColor: "rgb(59,89,152", color: "black" }}
-                icon={<FacebookOutlined />}
-                size="large"
-              ></Button>
-              <Button
-                type="primary"
-                className="ms-3 font-weight-bold"
-                shape="circle"
-                icon={<TwitterOutlined />}
-                size="large"
-              ></Button>
             </div>
           </form>
         </Content>
@@ -151,4 +152,4 @@ const Login = (props: Props) => {
   );
 };
 
-export default Login;
+export default Register;

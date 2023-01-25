@@ -36,13 +36,28 @@ const ProjectDetail = (props: Props) => {
         <div className="projectDetail-header">
           <h5>{detailProjectById?.projectName}</h5>
           <div className="projectDetail-wrap">
-            <Search placeholder="input search text" onSearch={onSearch} style={{ width: 250, marginTop: 20 }} />
+            <Search
+              placeholder="input search text"
+              onSearch={onSearch}
+              style={{ width: 250, marginTop: 20 }}
+            />
             {detailProjectById?.members?.map((member: Member) => {
-              return <Avatar src={member?.avatar}>
-              </Avatar>
+              return (
+                <Avatar
+                  src={member?.avatar}
+                  style={{ marginTop: 20, marginLeft: 10 }}
+                ></Avatar>
+              );
             })}
-            <button className='btn'>Only My Issue</button>
-            <button className='btn'>Recently Updated</button>
+            <button
+              className="btn btn-danger"
+              style={{ marginTop: 20, marginRight: 20, marginLeft: 10 }}
+            >
+              Only My Issue
+            </button>
+            <button className="btn btn-primary" style={{ marginTop: 20 }}>
+              Recently Updated
+            </button>
           </div>
 
         </div>
@@ -57,7 +72,7 @@ const ProjectDetail = (props: Props) => {
                   {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
                     return <li key={index} className="list-group-item p-4" style={{ cursor: 'pointer' }}>
                       <p>{ReactHtmlParser(lstTask?.taskName)}</p>
-                      <div className="block d-flex" style={{justifyContent:'space-between'}} >
+                      <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
                         <div className="block-left">
                           <i className="fa fa-bookmark "></i>
                           <i className="fa fa-arrow-up ms-2"></i>
