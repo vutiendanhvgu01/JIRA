@@ -63,3 +63,4 @@ export type Member  = {
     email: string;
     phoneNumber: string;
 }
+    

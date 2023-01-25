@@ -31,8 +31,6 @@ const CreateTask: React.FC = (props: Props) => {
   useEffect(() => {
     const action1 = getAllProject();
     dispatch(action1);
-    const action = getUserByProjectIdApi(allProjects[0].id.toString())
-    dispatch(action)
 
 
   }, []);
@@ -64,13 +62,13 @@ const CreateTask: React.FC = (props: Props) => {
       listUserAsign:[0],
       taskName: "",
       description: '',
-      statusId: statusTask[0].statusId,
+      statusId: '',
       originalEstimate:1,
       timeTrackingSpent: 1,
       timeTrackingRemaining: 1,
-      projectId: allProjects[0].id,
+      projectId: '',
       typeId: 1,
-      priorityId: Priority[0].priorityId,
+      priorityId: '',
     },
     validationSchema: yup.object().shape({}),
     onSubmit: (values) => {
@@ -107,7 +105,6 @@ const CreateTask: React.FC = (props: Props) => {
     form.setFieldValue(name, Number(value))
    };
    const handleChangeProject = (e) => {
-  
     const value = e.target.value
     const action = getUserByProjectIdApi(value)
     dispatch(action)

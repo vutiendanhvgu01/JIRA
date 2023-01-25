@@ -11,14 +11,17 @@ import ReactHtmlParser, {
   convertNodeToElement,
   htmlparser2,
 } from "react-html-parser";
+import { getTaskDetailByApi, getTaskDetailIdAction } from '../../redux/reducers/TaskReducer'
+import { setModalOpen } from '../../redux/reducers/UserReducer'
+import ModalTaskDetail from './ModalTaskDetail'
 
 type Props = {}
 
 const ProjectDetail = (props: Props) => {
   const { Search } = Input;
   const onSearch = (value: string) => {
-
   };
+
 
   const dispatch: DispatchType = useDispatch()
   const { detailProjectById } = useSelector((state: RootState) => { return state.ProjectReducer })
@@ -29,6 +32,7 @@ const ProjectDetail = (props: Props) => {
     dispatch(actionGetProject)
 
   }, [])
+
   return (
     <>
       <div className='projectDetail-container'>
@@ -70,7 +74,15 @@ const ProjectDetail = (props: Props) => {
                 </div>
                 <div className="card-body">
                   {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
-                    return <li key={index} className="list-group-item p-4" style={{ cursor: 'pointer' }}>
+                    return <li onClick={() => {
+                      const actionTaskId =  getTaskDetailIdAction(lstTask.taskId) 
+                      dispatch(actionTaskId)
+                      const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
+                      dispatch(actionTaskDetail)
+          
+                        dispatch(setModalOpen(true))
+                      
+                    }} key={index}  className="list-group-item p-4" style={{ cursor: 'pointer' }}>
                       <p>{ReactHtmlParser(lstTask?.taskName)}</p>
                       <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
                         <div className="block-left">
@@ -98,7 +110,7 @@ const ProjectDetail = (props: Props) => {
         </div>
 
       </div>
-
+          {<ModalTaskDetail/>}
 
 
     </>
