@@ -10,13 +10,13 @@ import ReactHtmlParser, {
 } from "react-html-parser";
 import { Assigness } from './TypeProjectDetail'
 import { PriorityTask, Status, TypeTask } from '../Task/TypeTask'
-import { insertComment } from '../../redux/reducers/TaskReducer'
+import { insertComment, TypeAllComment } from '../../redux/reducers/TaskReducer'
 import { CreateTypeTask, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 type Props = {}
 
 const ModalTaskDetail = (props: Props) => {
     const { ModalOpen, userLogin } = useSelector((state: RootState) => { return state.UserReducer })
-    const { TaskDetail, TaskIdDetail } = useSelector((state: RootState) => { return state.TaskReducer })
+    const { TaskDetail, TaskIdDetail,AllComment } = useSelector((state: RootState) => { return state.TaskReducer })
     const { statusTask, taskType, Priority } = useSelector((state: RootState) => {
         return state.ProjectReducer
     })
@@ -34,32 +34,7 @@ const ModalTaskDetail = (props: Props) => {
         const value = e.target.value
         setComment(value)
     }
-    // const detailName = useRef({
-    //     statusName: '',
-    //     priorityName: '',
-    //     taskTypeName: '',
-    // })
-    // const handleNameDetail = () => {
-    //     statusTask?.map((status: Status) => {
-    //         if (TaskDetail.statusId == status.statusId) {
-    //             detailName.current.statusName = status.statusName
-    //         }
-    //     })
-    //     console.log(detailName.current)
-    //     taskType?.map((type) => {
-    //         if (TaskDetail.typeId == type.id) {
-    //             detailName.current.taskTypeName = type.taskType
-    //         }
-    //     })
-    //     Priority?.map((pri) => {
-    //         if (TaskDetail.priorityId == pri.priorityId) {
-    //             detailName.current.priorityName = pri.priority
-    //         }
-    //     })
-    //     console.log(detailName)
-    //     return detailName
-    // }
-    // handleNameDetail()
+
 
     const handlePressEnter = (e) => {
         const data = {
@@ -121,8 +96,14 @@ const ModalTaskDetail = (props: Props) => {
                                         <Avatar src={userLogin?.avatar}></Avatar>
                                     </div>
                                     <div className='col-11'>
-                                        <p className='mb-2'>Name  <span>a month ago</span></p>
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum soluta dolor fugiat dolore nulla vel, atque eaque error ex voluptatibus quas quam totam! Magnam assumenda tempora perspiciatis, temporibus nam cum?</p>
+                                        {AllComment?.map((comment:TypeAllComment) => {
+                                            return   <div className="comment-item">
+                                            <p className='mb-2'>{comment.user.name}  <span>a month ago</span></p>
+                                            <p>{comment.contentComment}</p>
+                                            </div>
+                                        })}
+                                      
+                                        
                                     </div>
                                 </div>
                             </div>

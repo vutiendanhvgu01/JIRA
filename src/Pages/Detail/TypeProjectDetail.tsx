@@ -38,6 +38,19 @@ export type LstTaskDeTail =  {
     priorityId: number;
     projectId: number;
 }
+export type TaskTypeDetail  = {
+    id: number;
+    taskType: string;
+  }
+  
+  export type Member  = {
+    userId: number;
+    name: string;
+    avatar: string;
+    email: string;
+    phoneNumber: string;
+  }
+    
 
 export type Assigness =  {
     id: number;
@@ -51,16 +64,3 @@ export type PriorityTask =  {
     priority: string;
 }
 
-export type TaskTypeDetail  = {
-    id: number;
-    taskType: string;
-}
-
-export type Member  = {
-    userId: number;
-    name: string;
-    avatar: string;
-    email: string;
-    phoneNumber: string;
-}
-    

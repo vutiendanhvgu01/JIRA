@@ -11,7 +11,7 @@ import ReactHtmlParser, {
   convertNodeToElement,
   htmlparser2,
 } from "react-html-parser";
-import { getTaskDetailByApi, getTaskDetailIdAction } from '../../redux/reducers/TaskReducer'
+import { getAllCommentApi, getTaskDetailByApi, getTaskDetailIdAction } from '../../redux/reducers/TaskReducer'
 import { setModalOpen } from '../../redux/reducers/UserReducer'
 import ModalTaskDetail from './ModalTaskDetail'
 
@@ -75,15 +75,15 @@ const ProjectDetail = (props: Props) => {
                   <p className='card-title'>{item?.statusName}</p>
                 </div>
                 <div className="card-body">
-                  <ul style={{listStyle:'none'}}>
+                  <ul>
                   {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
                     return <li onClick={() => {
                       const actionTaskId =  getTaskDetailIdAction(lstTask.taskId) 
                       dispatch(actionTaskId)
                       const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
                       dispatch(actionTaskDetail)
-          
-                        dispatch(setModalOpen(true))
+                    
+                      dispatch(setModalOpen(true))
                       
                     }} key={index}  className="list-group-item p-4" style={{ cursor: 'pointer' }}>
                       <p>{ReactHtmlParser(lstTask?.taskName)}</p>
