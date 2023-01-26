@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { DispatchType, RootState } from '../../redux/configStore'
-import { getProjectDetailApi } from '../../redux/reducers/ProjectReducer'
+import { getAllProject, getAllProjectAPI, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 import { Member, TypeProjectDetail, LstTask, LstTaskDeTail } from './TypeProjectDetail'
 import { Avatar, Input, Space } from 'antd';
 import ReactHtmlParser, {
@@ -28,9 +28,10 @@ const ProjectDetail = (props: Props) => {
   const param = useParams()
 
   useEffect(() => {
+    const action = getAllProject();
+    dispatch(action);
     const actionGetProject = getProjectDetailApi(param.id)
     dispatch(actionGetProject)
-
   }, [])
 
   return (
@@ -45,9 +46,10 @@ const ProjectDetail = (props: Props) => {
               onSearch={onSearch}
               style={{ width: 250, marginTop: 20 }}
             />
-            {detailProjectById?.members?.map((member: Member) => {
+            {detailProjectById?.members?.map((member: Member,index:number) => {
               return (
                 <Avatar
+                key={index}
                   src={member?.avatar}
                   style={{ marginTop: 20, marginLeft: 10 }}
                 ></Avatar>
@@ -73,6 +75,7 @@ const ProjectDetail = (props: Props) => {
                   <p className='card-title'>{item?.statusName}</p>
                 </div>
                 <div className="card-body">
+                  <ul style={{listStyle:'none'}}>
                   {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
                     return <li onClick={() => {
                       const actionTaskId =  getTaskDetailIdAction(lstTask.taskId) 
@@ -91,8 +94,8 @@ const ProjectDetail = (props: Props) => {
                         </div>
                         <div className="block-right">
                           <div className="avatar-group">
-                            {lstTask?.assigness.map((memberAssign) => {
-                              return <Avatar className='avatar' src={memberAssign?.avatar}>
+                            {lstTask?.assigness.map((memberAssign,index) => {
+                              return <Avatar key={index} className='avatar' src={memberAssign?.avatar}>
                               </Avatar>
                             })}
                           </div>
@@ -101,6 +104,9 @@ const ProjectDetail = (props: Props) => {
                     </li>
 
                   })}
+
+                  </ul>
+               
                 </div>
               </div>
             </div>
