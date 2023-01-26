@@ -9,6 +9,10 @@ export interface TaskReducerType {
     TaskIdDetail:number
     TaskDetail: TaskTypeDetailById
 }
+export interface dataInsertComment {
+  taskId:number|string
+  contentComment:string
+}
 
 const initialState = {
     TaskIdDetail: 8223,
@@ -53,7 +57,8 @@ const TaskReducer = createSlice({
     },
     getTaskDetailByAction: (state:TaskReducerType,action:PayloadAction<TaskTypeDetailById>) => {
         state.TaskDetail = action.payload
-    }
+    },
+
   }
 });
 
@@ -68,4 +73,11 @@ export const getTaskDetailByApi = (id:string | number) => {
         const action = getTaskDetailByAction(result.data.content)
         dispatch(action)
     }   
+}
+export const insertComment = (data:dataInsertComment) => {
+  return async (dispatch:DispatchType) =>{
+    const result = await http.post('https://jiranew.cybersoft.edu.vn/api/Comment/insertComment',data)
+    console.log(result.data.content)
+
+  }
 }
