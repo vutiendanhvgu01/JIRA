@@ -43,6 +43,10 @@ export type UpdatePriority = {
   priorityId: string
 
 }
+export type UpdateDescription = {
+  taskId: number;
+  description: string
+}
 export interface TypeUpdateTask {
   listUserAsign:         number[];
   taskId:                string;
@@ -215,6 +219,15 @@ export const addUserFromTaskApi = (data,projectId) => {
     dispatch(action)
     dispatch(getProjectDetailApi(projectId))
     notifiFucntion("success", "Add user success");
+  }
+}
+
+export const updateDescriptionApi = (data:UpdateDescription,id) => {
+  return async(dispatch:DispatchType) => {
+    const result = await http.put('/api/Project/updateDescription',data)
+    console.log(result.data.content)
+    dispatch(getTaskDetailByApi(id))
+    notifiFucntion("success", "Update success");
   }
 }
 

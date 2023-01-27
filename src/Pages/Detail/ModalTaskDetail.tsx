@@ -10,11 +10,13 @@ import ReactHtmlParser, {
 } from "react-html-parser";
 import { Assigness } from './TypeProjectDetail'
 import { PriorityTask, Status, TypeTask } from '../Task/TypeTask'
-import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment,addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority} from '../../redux/reducers/TaskReducer'
+import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment, addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority,updateDescriptionApi } from '../../redux/reducers/TaskReducer'
 import { CreateTypeTask, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 import { http } from '../../util/config'
 import { useParams } from 'react-router'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Editor } from "@tinymce/tinymce-react";
+import { useFormik } from 'formik'
 type Props = {}
 
 const ModalTaskDetail = (props: Props) => {
@@ -26,6 +28,7 @@ const ModalTaskDetail = (props: Props) => {
     const params = useParams()
     const [comment, setComment] = useState()
     const { user } = useSelector((state: RootState) => state.UserReducer);
+    const [visibleEditor, setVisibleEditor] = useState(false)
     const dispatch: DispatchType = useDispatch()
     const handleCancel = () => {
         dispatch(setModalOpen(false))
@@ -40,13 +43,13 @@ const ModalTaskDetail = (props: Props) => {
         const value = e.target.value
         setComment(value)
     }
-    const updateStatusApi = async (data:UpdateStatus) => {
+    const updateStatusApi = async (data: UpdateStatus) => {
         const result = await http.put(`/api/Project/updateStatus`, data)
         console.log(result.data.content)
         const action = getProjectDetailApi(params.id)
         dispatch(action)
     }
-    const updatePriorityApi = async (data:UpdatePriority) => {
+    const updatePriorityApi = async (data: UpdatePriority) => {
         const result = await http.put('/api/Project/updatePriority', data)
         console.log(result.data.content)
         const action = getProjectDetailApi(params.id)
@@ -59,7 +62,6 @@ const ModalTaskDetail = (props: Props) => {
         }
         console.log(data)
         updateStatusApi(data)
-
     }
     const handleUpdatePriority = (value) => {
         const data = {
@@ -77,6 +79,7 @@ const ModalTaskDetail = (props: Props) => {
         const action = insertComment(data)
         dispatch(action)
         setComment(null)
+
     }
     // Delete Comment
 
@@ -91,7 +94,7 @@ const ModalTaskDetail = (props: Props) => {
     const handleChangeEstimate = (e) => {
 
         console.log(e.target.value)
-        
+
         const data = {
             taskId: Number(TaskIdDetail),
             originalEstimate: Number(e.target.value)
@@ -103,23 +106,64 @@ const ModalTaskDetail = (props: Props) => {
     }
     // Update Task
     const dataUpdateTask = useRef({
-            listUserAsign: TaskDetail.assigness.map((member) => {
-                return Number(member.id)
-            }),
-            taskId: TaskDetail.taskId.toString(),
-            taskName: TaskDetail.taskName.toString(),
-            description: TaskDetail.description.toString(),
-            statusId: TaskDetail.statusId.toString(),
-            originalEstimate: Number(TaskDetail.originalEstimate),
-            timeTrackingSpent: Number(TaskDetail.timeTrackingSpent),
-            timeTrackingRemaining: Number(TaskDetail.timeTrackingRemaining),
-            projectId: Number(TaskDetail.projectId),
-            typeId: Number(TaskDetail.typeId),
-            priorityId: Number(params.id)
-          })
-    
+        listUserAsign: TaskDetail.assigness.map((member) => {
+            return Number(member.id)
+        }),
+        taskId: TaskDetail.taskId.toString(),
+        taskName: TaskDetail.taskName.toString(),
+        description: TaskDetail.description.toString(),
+        statusId: TaskDetail.statusId.toString(),
+        originalEstimate: Number(TaskDetail.originalEstimate),
+        timeTrackingSpent: Number(TaskDetail.timeTrackingSpent),
+        timeTrackingRemaining: Number(TaskDetail.timeTrackingRemaining),
+        projectId: Number(TaskDetail.projectId),
+        typeId: Number(TaskDetail.typeId),
+        priorityId: Number(params.id)
+    })
+    const renderEditor = () => {
+        return <div>
+            {visibleEditor ?
+                <div>
+                    <Editor
+                        onEditorChange={(value) => {
+                            console.log(value)
+                            form.setFieldValue('description', value)
+                        }}
+                        initialValue={TaskDetail?.description}
+                        init={{
+                            height: 300,
+                            menubar: false,
+                            plugins: [
+                                "advlist autolink lists link image charmap print preview anchor",
+                                "searchreplace visualblocks code fullscreen",
+                                "insertdatetime media table paste code help wordcount",
+                            ],
+                            toolbar:
+                                "undo redo | formatselect | " +
+                                "bold italic backcolor | alignleft aligncenter " +
+                                "alignright alignjustify | bullist numlist outdent indent | " +
+                                "removeformat | help",
+                            content_style:
+                                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                        }}
 
+                    />
 
+                </div>
+                : <div onClick={() => {
+                    setVisibleEditor(!visibleEditor)
+                }}>{ReactHtmlParser(TaskDetail?.description)}</div>
+            }
+        </div>
+    }
+    const form = useFormik({
+        initialValues: {
+            description: ''
+        },
+        onSubmit: (value) => {
+            console.log(value)
+        }
+    })
     return (<>
         <Modal title={TaskDetail?.taskName} open={ModalOpen} onOk={handleOk} okText='Update' onCancel={handleCancel} width={980}>
             <div className="modal-header">
@@ -144,12 +188,28 @@ const ModalTaskDetail = (props: Props) => {
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-8">
-
                             <div className="description" style={{ minHeight: 290 }}>
                                 <p style={{ fontWeight: 'bold' }}>Description</p>
-                                <p>{ReactHtmlParser(TaskDetail?.description)}</p>
-
-
+                                {/* <p>{ReactHtmlParser(TaskDetail?.description)}</p> */}
+                                {renderEditor()}
+                                <div className='button-description-block d-flex'>
+                                    {visibleEditor ? <button className="btn btn-danger my-3 me-2" onClick={() => {
+                                        setVisibleEditor(!visibleEditor)
+                                    }}>Cancel</button> : ''}
+                                    {visibleEditor ? <button className="btn btn-primary my-3" onClick={() => {
+                                        setVisibleEditor(!visibleEditor)
+                                        const des = form.getFieldProps('description').value
+                                        const data = {
+                                            taskId:Number(TaskIdDetail),
+                                            description: des,
+                                        } 
+                                        console.log(data)  
+                                        dispatch(updateDescriptionApi(data,TaskIdDetail))
+                                        
+                                    }}>Cập nhật</button> : <button className="btn btn-primary my-3" onClick={() => {
+                                        setVisibleEditor(!visibleEditor)
+                                    }}>Chỉnh sửa</button>}
+                                </div>
                             </div>
                             <div className="comment">
                                 <p style={{ fontWeight: 'bold' }}>Comment</p>
@@ -160,7 +220,7 @@ const ModalTaskDetail = (props: Props) => {
                                     <Input onChange={handleChangeComment} onPressEnter={handlePressEnter} className='ms-2' placeholder="Add a comment" value={comment} />
 
                                 </div>
-                                <p className='mt-2'>
+                                <p className='my-2'>
                                     <span style={{ fontWeight: 500, color: 'gray' }}>Protip:</span>
                                     <span> press <span style={{ fontWeight: 'bold', color: '#b4ac6' }}>ENTER </span>to comment</span>
                                 </p>
@@ -188,7 +248,7 @@ const ModalTaskDetail = (props: Props) => {
                                                     <Button onClick={() => {
                                                         const data = {
                                                             taskId: TaskIdDetail.toString(),
-                                                            commentId:comment.id
+                                                            commentId: comment.id
                                                         }
                                                         dispatch(deletedCommentApi(data))
                                                     }} danger icon={<DeleteOutlined />} type="text" style={{ border: 'none' }}>
@@ -215,7 +275,7 @@ const ModalTaskDetail = (props: Props) => {
                                     onSelect={
                                         handleUpdateStatus
                                     }
-                                    options={statusTask?.map((item: Status,index:number) => {
+                                    options={statusTask?.map((item: Status, index: number) => {
                                         return {
                                             label: item.statusName,
                                             value: item.statusId
@@ -258,7 +318,7 @@ const ModalTaskDetail = (props: Props) => {
                                                         taskId: TaskIdDetail,
                                                         userId: Number(valueSelect)
                                                     }
-                                                    dispatch(addUserFromTaskApi(data,params.id))
+                                                    dispatch(addUserFromTaskApi(data, params.id))
                                                 }}
                                                 style={{ width: "100%" }}
                                                 onSearch={(value) => {
