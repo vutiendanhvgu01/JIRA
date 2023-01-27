@@ -10,7 +10,7 @@ import ReactHtmlParser, {
 } from "react-html-parser";
 import { Assigness } from './TypeProjectDetail'
 import { PriorityTask, Status, TypeTask } from '../Task/TypeTask'
-import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment,addUserFromTaskApi, updateEstimateApi, UpdateStatus} from '../../redux/reducers/TaskReducer'
+import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment,addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority} from '../../redux/reducers/TaskReducer'
 import { CreateTypeTask, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 import { http } from '../../util/config'
 import { useParams } from 'react-router'
@@ -46,11 +46,11 @@ const ModalTaskDetail = (props: Props) => {
         const action = getProjectDetailApi(params.id)
         dispatch(action)
     }
-    const updatePriorityApi = async (data:UpdateStatus) => {
+    const updatePriorityApi = async (data:UpdatePriority) => {
         const result = await http.put('/api/Project/updatePriority', data)
         console.log(result.data.content)
-        // const action = getProjectDetailApi(params.id)
-        // dispatch(action)
+        const action = getProjectDetailApi(params.id)
+        dispatch(action)
     }
     const handleUpdateStatus = (value) => {
         const data = {
@@ -58,7 +58,7 @@ const ModalTaskDetail = (props: Props) => {
             statusId: value.toString(),
         }
         console.log(data)
-        // updateStatusApi(data)
+        updateStatusApi(data)
 
     }
     const handleUpdatePriority = (value) => {
@@ -103,7 +103,6 @@ const ModalTaskDetail = (props: Props) => {
     }
     // Update Task
     const dataUpdateTask = useRef({
-        
             listUserAsign: TaskDetail.assigness.map((member) => {
                 return Number(member.id)
             }),
@@ -213,8 +212,10 @@ const ModalTaskDetail = (props: Props) => {
                                 <Select
                                     defaultValue={TaskDetail?.statusId}
                                     style={{ width: '100%' }}
-                                    onSelect={handleUpdateStatus}
-                                    options={statusTask.map((item: Status) => {
+                                    onSelect={
+                                        handleUpdateStatus
+                                    }
+                                    options={statusTask?.map((item: Status,index:number) => {
                                         return {
                                             label: item.statusName,
                                             value: item.statusId

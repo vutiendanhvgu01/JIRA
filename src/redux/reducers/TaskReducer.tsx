@@ -34,12 +34,14 @@ export interface UserComment {
 }
 export type UpdateStatus = {
   taskId: number;
-  priorityId: string
+  statusId: string
+
 }
 
 export type UpdatePriority = {
   taskId: number;
-  statusId: string
+  priorityId: string
+
 }
 export interface TypeUpdateTask {
   listUserAsign:         number[];
@@ -196,7 +198,6 @@ export const updateEstimateApi = (data) => {
     dispatch(action)
   }
 }
-
 export const removeUserFromTaskApi = (data) => {
     return async(dispatch:DispatchType) => {
       const result = await http.post('/api/Project/removeUserFromTask',data)
@@ -206,7 +207,6 @@ export const removeUserFromTaskApi = (data) => {
       notifiFucntion("success", "Remove user success");
     }
 }
-
 export const addUserFromTaskApi = (data,projectId) => {
   return async(dispatch:DispatchType) => {
     const result = await http.post('/api/Project/assignUserTask',data)
@@ -214,7 +214,6 @@ export const addUserFromTaskApi = (data,projectId) => {
     const action = getTaskDetailByApi(data.taskId)
     dispatch(action)
     dispatch(getProjectDetailApi(projectId))
-
     notifiFucntion("success", "Add user success");
   }
 }

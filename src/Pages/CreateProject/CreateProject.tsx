@@ -49,7 +49,7 @@ const CreateProject = (props: Props) => {
   });
   return (
     <div className="form-control m-3">
-      <h3>Create Project</h3>
+      <h3 style={{fontSize:30,fontWeight:'bold',marginLeft:25,marginTop:30}}>Create Project</h3>
       <form className="container" onSubmit={form.handleSubmit}>
         <div className="form-group m-3">
           <p>Name</p>
@@ -101,7 +101,7 @@ const CreateProject = (props: Props) => {
             })}
           </select>
         </div>
-        <button className="btn btn-outline-primary" type="submit">
+        <button className="btn btn-outline-primary" type="submit" style={{marginLeft:20,marginBottom:30}}>
           Create project
         </button>
       </form>

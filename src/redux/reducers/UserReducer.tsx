@@ -18,7 +18,7 @@ import {
 import { DispatchType } from "../configStore";
 import { notifiFucntion } from "../../util/notificationCyberBug";
 import userEvent from "@testing-library/user-event";
-import { getAllProjectAPI } from "./ProjectReducer";
+import { getAllProjectAPI, getProjectDetailApi } from "./ProjectReducer";
 export interface UserLoginResult {
   id: number;
   email: string;
@@ -141,7 +141,7 @@ export const getUserApi = (keyword: string) => {
     console.log(result.data.content);
   };
 };
-export const addUserApi = (addUser: AddUser) => {
+export const addUserApi = (addUser: AddUser,value) => {
   return async (dispatch: DispatchType) => {
     const result = await axios({
       url: `https://jiranew.cybersoft.edu.vn/api/Project/assignUserProject`,
@@ -152,11 +152,13 @@ export const addUserApi = (addUser: AddUser) => {
         Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
       },
     });
+    console.log(value)
     dispatch(getAllProjectAPI());
+    dispatch(getProjectDetailApi(value))
     console.log(result.data.content);
   };
 };
-export const deleteUserApi = (deleteUser: AddUser) => {
+export const deleteUserApi = (deleteUser: AddUser,value) => {
   return async (dispatch: DispatchType) => {
     const result = await axios({
       url: `https://jiranew.cybersoft.edu.vn/api/Project/removeUserFromProject`,
@@ -168,6 +170,7 @@ export const deleteUserApi = (deleteUser: AddUser) => {
       },
     });
     dispatch(getAllProjectAPI());
+    dispatch(getProjectDetailApi(value))
     console.log(result.data.content);
   };
 };
@@ -187,7 +190,6 @@ export const editUser = (value: UserUpdate) => {
     dispatch(userLoginAction);
   };
 };
-
 export const getUserByProjectIdApi = (id: string) => {
   return async (dispatch: DispatchType) => {
     const result = await http.get(

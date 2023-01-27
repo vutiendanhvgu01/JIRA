@@ -115,7 +115,7 @@ const CreateTask: React.FC = (props: Props) => {
   return (
     <>
       <div className="createTask-content">
-        <h1>Create Task</h1>
+        <h5 className="mb-3" style={{fontWeight:'bold',fontSize:30}}>Create Task</h5>
         <form onSubmit={form.handleSubmit} className="form-createTask">
           <div className="form-group">
             <p className="title-createTask">Project</p>

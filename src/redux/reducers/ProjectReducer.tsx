@@ -322,7 +322,6 @@ export const deleteProjectAPI = (projectUpdate: number) => {
     });
     console.log(result.data.content);
     const action = getAllProjectAPI();
-
     dispatch(action);
     notifiFucntion("success", "Delete project success");
   };

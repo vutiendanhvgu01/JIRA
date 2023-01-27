@@ -208,7 +208,7 @@ const ProjectManagement = (props: Props) => {
                                         deleteUserApi({
                                           projectId: record.id,
                                           userId: item.userId,
-                                        })
+                                        },2)
                                       );
                                     }}
                                   >
@@ -248,7 +248,7 @@ const ProjectManagement = (props: Props) => {
                         addUserApi({
                           projectId: record.id,
                           userId: Number(valueSelect),
-                        })
+                        },2)
                       );
                     }}
                     style={{ width: "100%" }}
@@ -308,7 +308,7 @@ const ProjectManagement = (props: Props) => {
   ];
   return (
     <>
-      <div className="text-center fs-5">Project Management</div>
+      <div className="text-center" style={{fontSize:'30px',fontWeight:'bold'}}>Project Management</div>
       <Space style={{ marginBottom: 16 }}>
         <Button onClick={setAgeSort}>Sort age</Button>
         <Button onClick={clearFilters}>Clear filters</Button>
