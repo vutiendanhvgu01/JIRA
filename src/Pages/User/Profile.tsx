@@ -19,37 +19,37 @@ const Profile = (props: Props) => {
     <>
       <div className="container">
         <div className="title-profile" style={{ textAlign: "center" }}>
-          <h1>Profile</h1>
+          <h1 style={{fontSize:'50px',fontWeight:'bold',marginBottom:'25px'}}>Profile</h1>
         </div>
         <div className="profile-wrap row">
           <div className="col-6">
-            <img src="https://ui-avatars.com/api/?name=Bao%20Toan" alt="..." />
+            <img width={400} height={400} style={{borderRadius:'50%',transform:'translateX(38%)'}} src="https://ui-avatars.com/api/?name=Bao%20Toan" alt="..." />
           </div>
           <div className="col-6">
             <div className="profile-content">
               <div className="form-group">
-                <p>
-                  Id <span className="required-icon">*</span>
+                <p className="mb-2" style={{fontSize:'24px'}}>
+                  Id <span className="required-icon text-danger">*</span>
                 </p>
-                <Input value={userLogin.id} disabled={true} />
+                <Input size='large'  value={userLogin.id} disabled={true} />
               </div>
               <div className="form-group">
-                <p>
-                  Email <span className="required-icon">*</span>
+                <p className="my-2" style={{fontSize:'24px'}}>
+                  Email <span className="required-icon text-danger">*</span>
                 </p>
-                <Input defaultValue={userLogin.email} readOnly />
+                <Input size='large'  defaultValue={userLogin.email} readOnly />
               </div>
               <div className="form-group">
-                <p>
-                  Name <span className="required-icon">*</span>
+                <p className="my-2" style={{fontSize:'24px'}}>
+                  Name <span className="required-icon text-danger">*</span>
                 </p>
-                <Input defaultValue={userLogin.name} readOnly/>
+                <Input  size='large' defaultValue={userLogin.name} readOnly/>
               </div>
               <div className="form-group">
-                <p>
-                  Phone number <span className="required-icon">*</span>
+                <p className="my-2" style={{fontSize:'24px'}}>
+                  Phone number <span className="required-icon text-danger">*</span>
                 </p>
-                <Input defaultValue={userLogin.phoneNumber} readOnly/>
+                <Input  size='large' defaultValue={userLogin.phoneNumber} readOnly/>
               </div>
              
             </div>

@@ -91,7 +91,7 @@ const initialState = {
   categoryProject: [],
   createProject: null,
   allProjects: null,
-  statusTask: null,
+  statusTask:  null,
   taskType: null,
   Priority: null,
   projectDetail: [],
@@ -305,7 +305,7 @@ export const updateProjectAPI = (projectUpdate: ProjectEdit) => {
     dispatch({
       type: "CLOSE_DRAWER",
     });
-    dispatch(action);
+    dispatch(action)
     notifiFucntion("success", "Update project success");
   };
 };
@@ -327,7 +327,7 @@ export const deleteProjectAPI = (projectUpdate: number) => {
     notifiFucntion("success", "Delete project success");
   };
 };
-export const getProjectDetailApi = (id:string) => {
+export const getProjectDetailApi = (id:string|number) => {
   return async (dispatch:DispatchType) => {
     const result = await http.get(`https://jiranew.cybersoft.edu.vn/api/Project/getProjectDetail?id=${id}`)
     console.log(result.data.content);

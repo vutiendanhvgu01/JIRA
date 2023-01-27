@@ -72,7 +72,7 @@ http.interceptors.response.use(
       //chuyển hướng về home
       history.push("/");
     }
-    if (err.response?.status === 401 || err.response.status === 403) {
+    if (err?.response?.status === 401 || err.response.status === 403) {
       alert("Hết phiên đăng nhập yêu cầu đăng nhập lại !");
       removeStore(ACCESS_TOKEN);
       removeStore(USER_LOGIN);

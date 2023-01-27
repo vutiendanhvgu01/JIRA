@@ -5,14 +5,14 @@ import { useParams } from 'react-router'
 import { DispatchType, RootState } from '../../redux/configStore'
 import { getAllProject, getAllProjectAPI, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 import { Member, TypeProjectDetail, LstTask, LstTaskDeTail } from './TypeProjectDetail'
-import { Avatar, Input, Space } from 'antd';
+import { AutoComplete, Avatar, Button, Input, Popover, Space } from 'antd';
 import ReactHtmlParser, {
   processNodes,
   convertNodeToElement,
   htmlparser2,
 } from "react-html-parser";
 import { getAllCommentApi, getTaskDetailByApi, getTaskDetailIdAction } from '../../redux/reducers/TaskReducer'
-import { setModalOpen } from '../../redux/reducers/UserReducer'
+import { addUserApi, getUserApi, setModalOpen } from '../../redux/reducers/UserReducer'
 import ModalTaskDetail from './ModalTaskDetail'
 
 type Props = {}
@@ -21,15 +21,15 @@ const ProjectDetail = (props: Props) => {
   const { Search } = Input;
   const onSearch = (value: string) => {
   };
-
-
+  const [value, setValue] = useState("");
+  const searchRef = useRef(null);
   const dispatch: DispatchType = useDispatch()
   const { detailProjectById } = useSelector((state: RootState) => { return state.ProjectReducer })
   const param = useParams()
-
+  const { user } = useSelector((state: RootState) => state.UserReducer);
   useEffect(() => {
-    const action = getAllProject();
-    dispatch(action);
+    // const action = getAllProject();
+    // dispatch(action);
     const actionGetProject = getProjectDetailApi(param.id)
     dispatch(actionGetProject)
   }, [])
@@ -40,21 +40,67 @@ const ProjectDetail = (props: Props) => {
         <h3>Cyber Board</h3>
         <div className="projectDetail-header">
           <h5>{detailProjectById?.projectName}</h5>
-          <div className="projectDetail-wrap">
+          <div className="projectDetail-wrap d-flex">
             <Search
               placeholder="input search text"
               onSearch={onSearch}
               style={{ width: 250, marginTop: 20 }}
             />
-            {detailProjectById?.members?.map((member: Member,index:number) => {
+            {detailProjectById?.members?.map((member: Member, index: number) => {
               return (
                 <Avatar
-                key={index}
+                  key={index}
                   src={member?.avatar}
                   style={{ marginTop: 20, marginLeft: 10 }}
                 ></Avatar>
               );
             })}
+            <div style={{marginTop:20,marginLeft:15}}>
+            <Popover
+              placement="topLeft"
+              title={"Add user"}
+              style={{marginLeft:20,}}
+              content={() => {
+                return (
+                  <AutoComplete
+                    options={user?.map((us, index) => {
+                      return { label: us.name, value: us.userId.toString() };
+                    })}
+                    value={value}
+                    onChange={(text) => {
+                      setValue(text);
+                    }}
+                    onSelect={(valueSelect, option) => {
+                      setValue(option.label);
+
+                      dispatch(
+                        addUserApi({
+                          projectId: Number(param.id),
+                          userId: Number(valueSelect),
+                        })
+      
+                      );
+                      dispatch(getProjectDetailApi(param.id))
+                    }}
+                    style={{ width: "100%" }}
+                    onSearch={(value) => {
+                      if (searchRef.current) {
+                        clearInterval(searchRef.current);
+                      }
+                      searchRef.current = setTimeout(() => {
+                        dispatch(getUserApi(value));
+                      }, 300);
+                    }}
+                  />
+                );
+              }}
+              trigger="click"
+            >
+              <Button>+</Button>
+            </Popover>
+
+            </div>
+            
             <button
               className="btn btn-danger"
               style={{ marginTop: 20, marginRight: 20, marginLeft: 10 }}
@@ -76,37 +122,36 @@ const ProjectDetail = (props: Props) => {
                 </div>
                 <div className="card-body">
                   <ul>
-                  {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
-                    return <li onClick={() => {
-                      const actionTaskId =  getTaskDetailIdAction(lstTask.taskId) 
-                      dispatch(actionTaskId)
-                      const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
-                      dispatch(actionTaskDetail)
-                    
-                      dispatch(setModalOpen(true))
-                      
-                    }} key={index}  className="list-group-item p-4" style={{ cursor: 'pointer' }}>
-                      <p>{ReactHtmlParser(lstTask?.taskName)}</p>
-                      <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
-                        <div className="block-left">
-                          <i className="fa fa-bookmark "></i>
-                          <i className="fa fa-arrow-up ms-2"></i>
-                        </div>
-                        <div className="block-right">
-                          <div className="avatar-group">
-                            {lstTask?.assigness.map((memberAssign,index) => {
-                              return <Avatar key={index} className='avatar' src={memberAssign?.avatar}>
-                              </Avatar>
-                            })}
+                    {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
+                      return <li onClick={() => {
+                        const actionTaskId = getTaskDetailIdAction(lstTask.taskId)
+                        dispatch(actionTaskId)
+                        const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
+                        dispatch(actionTaskDetail)
+                        dispatch(setModalOpen(true))
+
+                      }} key={index} className="list-group-item p-4" style={{ cursor: 'pointer' }}>
+                        <p>{ReactHtmlParser(lstTask?.taskName)}</p>
+                        <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
+                          <div className="block-left">
+                            <i className="fa fa-bookmark "></i>
+                            <i className="fa fa-arrow-up ms-2"></i>
+                          </div>
+                          <div className="block-right">
+                            <div className="avatar-group">
+                              {lstTask?.assigness.map((memberAssign, index) => {
+                                return <Avatar key={index} className='avatar' src={memberAssign?.avatar}>
+                                </Avatar>
+                              })}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </li>
+                      </li>
 
-                  })}
+                    })}
 
                   </ul>
-               
+
                 </div>
               </div>
             </div>
@@ -116,7 +161,7 @@ const ProjectDetail = (props: Props) => {
         </div>
 
       </div>
-          {<ModalTaskDetail/>}
+      {<ModalTaskDetail />}
 
 
     </>

@@ -39,13 +39,12 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("Project", "project", <ProjectOutlined />, [
-    getItem("View all projects", "allProjects"),
     getItem("Create project", "createProject"),
     getItem("Project Management", "projectManagement"),
   ]),
 
   getItem("User", "sub2", <UserOutlined />, [
-    getItem("View all users", "allUser", null),
+    // getItem("View all users", "allUser", null),
     getItem("My account", "profile", null),
   ]),
 
@@ -125,17 +124,13 @@ const HomeTemplate: React.FC = (props: Props) => {
               <img src={userLogin?.avatar} alt="..." />
               <h4>{userLogin?.name}</h4>
               <p>{userLogin?.email}</p>
-              <button type='button'
-              className="btn btn-primary"
-                onClick={() => {
+              
+                 <NavLink to='/' onClick={() => {
                   removeStore(ACCESS_TOKEN);
                   removeStore(USER_LOGIN);
                  
                  
-                }}
-              >
-                 <NavLink to='/'>Log out</NavLink>
-              </button>
+                }}>Log out</NavLink>
              
             </div>
           </div>
@@ -143,12 +138,7 @@ const HomeTemplate: React.FC = (props: Props) => {
             className="change-theme"
             style={{ marginTop: "15px", marginLeft: "20px" }}
           >
-            <Switch
-              checked={theme === "dark"}
-              onChange={changeTheme}
-              checkedChildren="Dark"
-              unCheckedChildren="Light"
-            />
+      
           </div>
           <Menu
             theme={theme}
