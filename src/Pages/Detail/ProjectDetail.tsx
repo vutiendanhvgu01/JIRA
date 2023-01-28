@@ -234,8 +234,8 @@ const ProjectDetail = (props: Props) => {
                               dispatch(setModalOpen(true));
                             }}
                             key={index}
-                            className="list-group-item p-4"
-                            style={{ cursor: "pointer" }}
+                            className="list-group-item p-4 bg-secondary mt-2"
+                            style={{ cursor: "pointer", borderRadius: 30 }}
                           >
                             <p className="mb-3">
                               {ReactHtmlParser(lstTask?.taskName)}
@@ -245,7 +245,7 @@ const ProjectDetail = (props: Props) => {
                               style={{ justifyContent: "space-between" }}
                             >
                               <div className="block-left">
-                                <p className="text-danger">
+                                <p className="text-danger me-4">
                                   {lstTask.priorityTask.priority}
                                 </p>
                               </div>

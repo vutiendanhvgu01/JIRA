@@ -128,7 +128,10 @@ const Register = (props: Props) => {
             <div className="form-group pt-5">
               <p>
                 Already have an account!
-                <NavLink to="/"> Log in now !</NavLink>
+                <NavLink to="/" className="text-secondary">
+                  {" "}
+                  Log in now !
+                </NavLink>
               </p>
             </div>
             <div className="form-group">

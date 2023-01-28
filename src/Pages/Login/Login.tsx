@@ -111,7 +111,9 @@ const Login = (props: Props) => {
             <div className="form-group pt-5">
               <p>
                 Do not have an account yet!
-                <NavLink to="/register"> Register now !</NavLink>
+                <NavLink to="/register">
+                  <span className="text-primary"> Register now !</span>
+                </NavLink>
               </p>
             </div>
             <div className="form-group">

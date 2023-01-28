@@ -22,6 +22,7 @@ import MODALCYBERBUG from "./HOC/CyberBugHOC/MODALCYBERBUG";
 import EditProjectForm from "./Component/Form/EditProjectForm/EditProjectForm";
 import ProjectDetail from "./Pages/Detail/ProjectDetail";
 import Register from "./Pages/Register/Register";
+import UserManagement from "./Pages/User/UserManagement";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -41,6 +42,7 @@ root.render(
             path="projectManagement"
             element={<ProjectManagement />}
           ></Route>
+          <Route path="userManagement" element={<UserManagement />}></Route>
           {/* <Route path="drawer" element={<MODALCYBERBUG />}></Route> */}
           <Route path="projectdetail">
             <Route path=":id" element={<ProjectDetail />}></Route>
