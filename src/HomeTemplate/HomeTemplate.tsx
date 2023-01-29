@@ -46,6 +46,7 @@ const items: MenuItem[] = [
   getItem("User", "sub2", <UserOutlined />, [
     // getItem("View all users", "allUser", null),
     getItem("My account", "profile", null),
+    getItem("User management", "userManagement", null),
   ]),
 
   getItem("Search", "sub4", <SearchOutlined />),
@@ -103,6 +104,11 @@ const HomeTemplate: React.FC = (props: Props) => {
         history.push(`/home/projectManagement`);
         break;
       }
+      case "userManagement": {
+        console.log("user management");
+        history.push(`/home/userManagement`);
+        break;
+      }
       default: {
         break;
       }
@@ -124,22 +130,22 @@ const HomeTemplate: React.FC = (props: Props) => {
               <img src={userLogin?.avatar} alt="..." />
               <h4>{userLogin?.name}</h4>
               <p>{userLogin?.email}</p>
-              
-                 <NavLink to='/' onClick={() => {
+
+              <NavLink
+                to="/"
+                onClick={() => {
                   removeStore(ACCESS_TOKEN);
                   removeStore(USER_LOGIN);
-                 
-                 
-                }}>Log out</NavLink>
-             
+                }}
+              >
+                Log out
+              </NavLink>
             </div>
           </div>
           <div
             className="change-theme"
             style={{ marginTop: "15px", marginLeft: "20px" }}
-          >
-      
-          </div>
+          ></div>
           <Menu
             theme={theme}
             onClick={onClick}

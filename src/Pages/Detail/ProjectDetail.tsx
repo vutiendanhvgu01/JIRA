@@ -1,120 +1,158 @@
-
-import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router'
-import { DispatchType, RootState } from '../../redux/configStore'
-import { getAllProject, getAllProjectAPI, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
-import { Member, TypeProjectDetail, LstTask, LstTaskDeTail } from './TypeProjectDetail'
-import { AutoComplete, Avatar, Button, Input, Popover, Space } from 'antd';
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { DispatchType, RootState } from "../../redux/configStore";
+import {
+  getAllProject,
+  getAllProjectAPI,
+  getProjectDetailApi,
+  getTaskPriority,
+  getTaskStatus,
+  getTaskType,
+} from "../../redux/reducers/ProjectReducer";
+import {
+  Member,
+  TypeProjectDetail,
+  LstTask,
+  LstTaskDeTail,
+} from "./TypeProjectDetail";
+import { AutoComplete, Avatar, Button, Input, Popover, Space } from "antd";
 import ReactHtmlParser, {
   processNodes,
   convertNodeToElement,
   htmlparser2,
 } from "react-html-parser";
-import { getAllCommentApi, getTaskDetailByApi, getTaskDetailIdAction, removeTask } from '../../redux/reducers/TaskReducer'
-import { addUserApi, deleteUserApi, getUserApi, setModalOpen } from '../../redux/reducers/UserReducer'
-import ModalTaskDetail from './ModalTaskDetail'
+import {
+  getAllCommentApi,
+  getTaskDetailByApi,
+  getTaskDetailIdAction, removeTask,
+} from "../../redux/reducers/TaskReducer";
+import {
+  addUserApi,
+  deleteUserApi,
+  getUserApi,
+  setModalOpen,
+} from "../../redux/reducers/UserReducer";
+import ModalTaskDetail from "./ModalTaskDetail";
 
-type Props = {}
+type Props = {};
 
 const ProjectDetail = (props: Props) => {
   const { Search } = Input;
-  const onSearch = (value: string) => {
-  };
+  const onSearch = (value: string) => {};
   const [value, setValue] = useState("");
   const searchRef = useRef(null);
-  const dispatch: DispatchType = useDispatch()
-  const { detailProjectById } = useSelector((state: RootState) => { return state.ProjectReducer })
-  const param = useParams()
+  const dispatch: DispatchType = useDispatch();
+  const { detailProjectById } = useSelector((state: RootState) => {
+    return state.ProjectReducer;
+  });
+  const param = useParams();
   const { user } = useSelector((state: RootState) => state.UserReducer);
   useEffect(() => {
     const action = getAllProject();
     dispatch(action);
-    const actionGetProject = getProjectDetailApi(param.id)
-    dispatch(actionGetProject)
-  }, [])
+    const actionGetProject = getProjectDetailApi(param.id);
+    dispatch(actionGetProject);
+  }, []);
 
   return (
     <>
-      <div className='projectDetail-container'>
-        <h3 className='mb-4' style={{ fontSize: 30, fontWeight: 'bold' }}>Cyber Board</h3>
+      <div className="projectDetail-container">
+        <h3 className="mb-4" style={{ fontSize: 30, fontWeight: "bold" }}>
+          Cyber Board
+        </h3>
         <div className="projectDetail-header">
-          <h5 style={{ fontWeight: 'bold' }}>{detailProjectById?.projectName}</h5>
-          <div className="projectDetail-wrap d-flex">
+          <h5 style={{ fontWeight: "bold" }}>
+            {detailProjectById?.projectName}
+          </h5>
+          <div className="projectDetail-wrap d-flex ">
             <Search
               placeholder="input search text"
               onSearch={onSearch}
               style={{ width: 250, marginTop: 20 }}
             />
-            {detailProjectById?.members?.map((member: Member, index: number) => {
-              return (
-                <Popover
-                  key={index}
-                  placement="top"
-                  title={"member"}
-                  content={() => {
-                    return (
-                      <table className="table">
-                        <thead>
-                          <tr>
-                            <th>id</th>
-                            <th>avatar</th>
-                            <th>name</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {detailProjectById.members?.map((item: any, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>{item.userId}</td>
-                                <td>
-                                  <img
-                                    src={item.avatar}
-                                    width="50"
-                                    height="50"
-                                    alt="..."
-                                  />
-                                </td>
-                                <td>{item.name}</td>
-                                <td>
-                                  <button
-                                    className="btn btn-danger"
-                                    onClick={() => {
-                                      dispatch(
-                                        deleteUserApi({
-                                          projectId: Number(param.id),
-                                          userId: item.userId,
-                                        }, param.id)
-                                      );
-                                      dispatch(getProjectDetailApi(param.id))
-                                    }}
-                                  >
-                                    x
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    );
-                  }}
-                >
-                  <Avatar
-                    key={index}
-                    src={member?.avatar}
-                    style={{ marginTop: 20, marginLeft: 10 }}
-                  ></Avatar>
-                </Popover>
 
-              );
-            })}
+            {detailProjectById?.members?.map(
+              (member: Member, index: number) => {
+                return (
+                  <Popover
+                    key={index}
+                    placement="top"
+                    title={"member"}
+                    content={() => {
+                      return (
+                        <table className="table">
+                          <thead>
+                            <tr>
+                              <th>id</th>
+                              <th>avatar</th>
+                              <th>name</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {detailProjectById.members?.map(
+                              (item: any, index) => {
+                                return (
+                                  <tr key={index}>
+                                    <td>{item.userId}</td>
+                                    <td>
+                                      <img
+                                        src={item.avatar}
+                                        width="50"
+                                        height="50"
+                                        alt="..."
+                                      />
+                                    </td>
+                                    <td>{item.name}</td>
+                                    <td>
+                                      <button
+                                        className="btn btn-danger"
+                                        onClick={() => {
+                                          dispatch(
+                                            deleteUserApi(
+                                              {
+                                                projectId: Number(param.id),
+                                                userId: item.userId,
+                                              },
+                                              param.id
+                                            )
+                                          );
+                                          dispatch(
+                                            getProjectDetailApi(param.id)
+                                          );
+                                        }}
+                                      >
+                                        x
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              }
+                            )}
+                          </tbody>
+                        </table>
+                      );
+                    }}
+                  >
+                    <Avatar
+                      key={index}
+                      src={member?.avatar}
+                      style={{
+                        marginTop: 20,
+                        marginLeft: 10,
+                      }}
+                    ></Avatar>
+                  </Popover>
+                );
+              }
+            )}
+
             <div style={{ marginTop: 20, marginLeft: 15 }}>
               <Popover
                 placement="topLeft"
                 title={"Add user"}
-                style={{ marginLeft: 20, }}
+                style={{ marginLeft: 20 }}
                 content={() => {
                   return (
                     <AutoComplete
@@ -129,12 +167,15 @@ const ProjectDetail = (props: Props) => {
                         setValue(option.label);
 
                         dispatch(
-                          addUserApi({
-                            projectId: Number(param.id),
-                            userId: Number(valueSelect),
-                          }, param.id)
+                          addUserApi(
+                            {
+                              projectId: Number(param.id),
+                              userId: Number(valueSelect),
+                            },
+                            param.id
+                          )
                         );
-                        dispatch(getProjectDetailApi(param.id))
+                        dispatch(getProjectDetailApi(param.id));
                       }}
                       style={{ width: "100%" }}
                       onSearch={(value) => {
@@ -152,20 +193,18 @@ const ProjectDetail = (props: Props) => {
               >
                 <Button>+</Button>
               </Popover>
-
             </div>
 
             <button
-              className="btn btn-danger"
+              className="btn btn-primary "
               style={{ marginTop: 20, marginRight: 20, marginLeft: 10 }}
             >
               Only My Issue
             </button>
-            <button className="btn btn-primary" style={{ marginTop: 20 }}>
+            <button className="btn btn-danger" style={{ marginTop: 20 }}>
               Recently Updated
             </button>
           </div>
-
         </div>
         <div className="projectDetail-body row mt-4">
           {detailProjectById?.lstTask?.map((item: LstTask, index: number) => {
@@ -219,19 +258,13 @@ const ProjectDetail = (props: Props) => {
 
                 </div>
               </div>
-            </div>
+            );
           })}
-
-
         </div>
-
       </div>
       {<ModalTaskDetail />}
-
-
     </>
+  );
+};
 
-  )
-}
-
-export default ProjectDetail
+export default ProjectDetail;
