@@ -257,6 +257,23 @@ return async(dispatch:DispatchType) => {
   dispatch(action)
 }
 }
+export const updateStatusApi = (data: UpdateStatus,id) => {
+  return async (dispatch:DispatchType) => {
+    const result = await http.put(`/api/Project/updateStatus`, data)
+    console.log(result.data.content)
+    const action = getProjectDetailApi(id)
+    dispatch(action)
+}
+
+}
+export const updatePriorityApi = (data: UpdatePriority,id) => {
+  return async (dispatch:DispatchType) => {
+    const result = await http.put('/api/Project/updatePriority', data)
+    console.log(result.data.content)
+    const action = getProjectDetailApi(id)
+    dispatch(action)
+}
+}
 // export const updateTaskApi = (data:TypeUpdateTask) => {
 //   return async (dispatch:DispatchType) => {
 //     const result = await http.post('/api/Project/updateTask',data)

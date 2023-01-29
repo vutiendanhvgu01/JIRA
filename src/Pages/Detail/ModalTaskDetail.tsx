@@ -10,7 +10,7 @@ import ReactHtmlParser, {
 } from "react-html-parser";
 import { Assigness } from './TypeProjectDetail'
 import { PriorityTask, Status, TypeTask } from '../Task/TypeTask'
-import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment, addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority, updateDescriptionApi, updateTimeTracking, getTaskDetailByApi, updateCommentApi } from '../../redux/reducers/TaskReducer'
+import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment, addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority, updateDescriptionApi, updateTimeTracking, getTaskDetailByApi, updateCommentApi, updatePriorityApi, updateStatusApi } from '../../redux/reducers/TaskReducer'
 import { CreateTypeTask, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 import { http } from '../../util/config'
 import { useParams } from 'react-router'
@@ -56,25 +56,14 @@ const ModalTaskDetail = (props: Props) => {
         const value = e.target.value
         setComment(value)
     }
-    const updateStatusApi = async (data: UpdateStatus) => {
-        const result = await http.put(`/api/Project/updateStatus`, data)
-        console.log(result.data.content)
-        const action = getProjectDetailApi(params.id)
-        dispatch(action)
-    }
-    const updatePriorityApi = async (data: UpdatePriority) => {
-        const result = await http.put('/api/Project/updatePriority', data)
-        console.log(result.data.content)
-        const action = getProjectDetailApi(params.id)
-        dispatch(action)
-    }
+
     const handleUpdateStatus = (value) => {
         const data = {
             taskId: Number(TaskIdDetail),
             statusId: value.toString(),
         }
         console.log(data)
-        updateStatusApi(data)
+        updateStatusApi(data,params.id)
     }
     const handleUpdatePriority = (value) => {
         const data = {
@@ -82,7 +71,7 @@ const ModalTaskDetail = (props: Props) => {
             priorityId: value
         }
         console.log(data)
-        updatePriorityApi(data)
+        updatePriorityApi(data,params.id)
     }
     const handlePressEnter = (e) => {
         const data = {
@@ -390,7 +379,7 @@ const ModalTaskDetail = (props: Props) => {
                                     defaultValue={TaskDetail?.priorityTask.priority}
                                     style={{ width: '100%' }}
                                     onSelect={handleUpdatePriority}
-                                    options={Priority.map((item: PriorityTask) => {
+                                    options={Priority?.map((item: PriorityTask) => {
                                         return {
                                             label: item.description,
                                             value: item.priorityId

@@ -62,13 +62,13 @@ const CreateTask: React.FC = (props: Props) => {
       listUserAsign:[0],
       taskName: "",
       description: '',
-      statusId: '',
+      statusId: '1',
       originalEstimate:1,
       timeTrackingSpent: 1,
       timeTrackingRemaining: 1,
-      projectId: '',
+      projectId:  '',
       typeId: 1,
-      priorityId: '',
+      priorityId:1,
     },
     validationSchema: yup.object().shape({}),
     onSubmit: (values) => {
@@ -125,9 +125,11 @@ const CreateTask: React.FC = (props: Props) => {
                 name="projectId"
                 onChange={handleChangeProject}
                 onBlur={form.handleBlur}
+                placeholder='Choose a project'
               >
+                <option value="" disabled selected>Select your option</option>
                 {allProjects?.map((item: projectAll,index:number) => {
-                  return <option key={index} value={item.id}>{item.projectName}</option>;
+                  return <option key={index}  value={item.id}>{item.projectName}</option>;
                 })}
               </select>
               <CaretDownOutlined className="arrowDown" />
