@@ -39,7 +39,7 @@ type Props = {};
 
 const ProjectDetail = (props: Props) => {
   const { Search } = Input;
-  const onSearch = (value: string) => {};
+  const onSearch = (value: string) => { };
   const [value, setValue] = useState("");
   const searchRef = useRef(null);
   const dispatch: DispatchType = useDispatch();
@@ -225,16 +225,16 @@ const ProjectDetail = (props: Props) => {
                         dispatch(setModalOpen(true))
 
                       }} key={index} className="list-group-item p-4 mb-2" style={{ cursor: 'pointer', background: 'white' }}>
-                        <div className="block-task-name row mb-2" style={{justifyContent:'space-between'}}>
-                       
-                        <p className='mb-3 col-4'>{ReactHtmlParser(lstTask?.taskName)}</p>
-                       <div className='col-4'></div>
-                        <button style={{transform:'translateY(-8px)'}} className='btn delete-task text-danger col-4' onClick={(e) => {
-                          e.stopPropagation()
-                          dispatch(removeTask(lstTask.taskId,param.id))
-                        }}>Delete</button>
+                        <div className="block-task-name row mb-2" style={{ justifyContent: 'space-between' }}>
+
+                          <p className='mb-3 col-4'>{ReactHtmlParser(lstTask?.taskName)}</p>
+                          <div className='col-4'></div>
+                          <button style={{ transform: 'translateY(-8px)' }} className='btn delete-task text-danger col-4' onClick={(e) => {
+                            e.stopPropagation()
+                            dispatch(removeTask(lstTask.taskId, param.id))
+                          }}>Delete</button>
                         </div>
-                     
+
 
                         <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
                           <div className="block-left">
@@ -258,9 +258,11 @@ const ProjectDetail = (props: Props) => {
 
                 </div>
               </div>
-            );
-          })}
+            </div>   })}
+          
+       
         </div>
+
       </div>
       {<ModalTaskDetail />}
     </>
