@@ -49,7 +49,6 @@ const items: MenuItem[] = [
     getItem("User management", "userManagement", null),
   ]),
 
-  getItem("Search", "sub4", <SearchOutlined />),
   getItem("Create task", "createTask", <PlusSquareOutlined />),
 ];
 
@@ -118,7 +117,7 @@ const HomeTemplate: React.FC = (props: Props) => {
   return (
     <>
       <Layout style={{ height: "150vh" }}>
-        <Sidebar />
+        {/* <Sidebar /> */}
         <Sider
           trigger={null}
           collapsible

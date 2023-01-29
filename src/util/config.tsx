@@ -1,5 +1,6 @@
 import axios from "axios";
 import { history } from "..";
+import { notifiFucntion } from "./notificationCyberBug";
 
 export const ACCESS_TOKEN = "accessToken";
 export const USER_LOGIN = "userLogin";
@@ -72,14 +73,13 @@ http.interceptors.response.use(
       //chuyển hướng về home
       // history.push("/");
     }
-    if (err?.response?.status === 401 || err.response.status === 403) {
-      
+    if (err?.response?.status === 401 || err.response?.status === 403) {
       // removeStore(ACCESS_TOKEN);
       // removeStore(USER_LOGIN);
       //Chuyển hướng trang dạng f5
       // window.location.href = "";
-
       // history.push("/");
+      alert("Không hợp lệ!");
     }
     return Promise.reject(err);
   }
