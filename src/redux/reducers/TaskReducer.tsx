@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
+import { message, Result } from 'antd'
 import { TaskTypeDetailById } from '../../Pages/Task/TypeTask';
 import { http } from '../../util/config';
 import { notifiFucntion } from '../../util/notificationCyberBug';
@@ -190,8 +190,14 @@ export const deletedCommentApi = (data) => {
     notifiFucntion("success", "Delete comment success");
   }
 }
-export const updateCommentApi = (id:string|number) => {
-  
+export const updateCommentApi = (id:string|number,data:string,TaskId:string | number) => {
+  return async(dispatch:DispatchType) => {
+    const result = await http.put(`/api/Comment/updateComment?id=${id}&contentComment=${data}`)
+    console.log(result.data.content)
+    const action = getTaskDetailByApi(TaskId)
+    dispatch(action)
+    notifiFucntion("success", "Edit comment success");
+  }
 }
 
 export const updateEstimateApi = (data) => {
@@ -200,6 +206,7 @@ export const updateEstimateApi = (data) => {
     const action = getTaskDetailByApi(data.taskId)
     console.log(result.data.content)
     dispatch(action)
+
   }
 }
 export const removeUserFromTaskApi = (data) => {
@@ -218,7 +225,7 @@ export const addUserFromTaskApi = (data,projectId) => {
     const action = getTaskDetailByApi(data.taskId)
     dispatch(action)
     dispatch(getProjectDetailApi(projectId))
-    notifiFucntion("success", "Add user success");
+    message.success('Add user successfully');
   }
 }
 
@@ -231,12 +238,25 @@ export const updateDescriptionApi = (data:UpdateDescription,id) => {
   }
 }
 
-// export const updateTimeTracking = () => {
-//   return async(dispatch:DispatchType) => {
-//     const result = await http.put()
-//   }
-// }
 
+export const updateTimeTracking = (data) => {
+  return async(dispatch:DispatchType) => {
+    const result = await http.put('/api/Project/updateTimeTracking',data)
+    console.log(result.data.content)
+    dispatch(getTaskDetailByApi(data.taskId))
+  }
+}
+
+export const removeTask = (id:string|number,projectId:string|number) => {
+return async(dispatch:DispatchType) => {
+  const result = await http.delete(`/api/Project/removeTask?taskId=${id}`)
+  if(result.data.statusCode === 403 || result.data.statusCode === 404 ) {
+    notifiFucntion("danger", "User is unthorization!");
+  }
+  const action = getProjectDetailApi(projectId)
+  dispatch(action)
+}
+}
 // export const updateTaskApi = (data:TypeUpdateTask) => {
 //   return async (dispatch:DispatchType) => {
 //     const result = await http.post('/api/Project/updateTask',data)

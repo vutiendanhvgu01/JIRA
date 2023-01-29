@@ -70,16 +70,16 @@ http.interceptors.response.use(
       //Lỗi do tham số => backend trả về 400 hoặc 404 mình sẽ xử lý
       alert("tham số không hợp lệ !");
       //chuyển hướng về home
-      history.push("/");
+      // history.push("/");
     }
     if (err?.response?.status === 401 || err.response.status === 403) {
-      alert("Hết phiên đăng nhập yêu cầu đăng nhập lại !");
-      removeStore(ACCESS_TOKEN);
-      removeStore(USER_LOGIN);
+      
+      // removeStore(ACCESS_TOKEN);
+      // removeStore(USER_LOGIN);
       //Chuyển hướng trang dạng f5
-      window.location.href = "";
+      // window.location.href = "";
 
-      history.push("/");
+      // history.push("/");
     }
     return Promise.reject(err);
   }

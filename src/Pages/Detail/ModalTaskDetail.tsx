@@ -1,4 +1,4 @@
-import { AutoComplete, Avatar, Button, Input, Modal, Popover, Select, Slider, Tag } from 'antd'
+import { Dropdown, message, Space, Tooltip, AutoComplete, Avatar, Button, Input, Modal, Popover, Select, Slider, Tag } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DispatchType, RootState } from '../../redux/configStore'
@@ -10,13 +10,15 @@ import ReactHtmlParser, {
 } from "react-html-parser";
 import { Assigness } from './TypeProjectDetail'
 import { PriorityTask, Status, TypeTask } from '../Task/TypeTask'
-import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment, addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority,updateDescriptionApi } from '../../redux/reducers/TaskReducer'
+import { deletedCommentApi, insertComment, removeUserFromTaskApi, TypeAllComment, addUserFromTaskApi, updateEstimateApi, UpdateStatus, UpdatePriority, updateDescriptionApi, updateTimeTracking, getTaskDetailByApi, updateCommentApi } from '../../redux/reducers/TaskReducer'
 import { CreateTypeTask, getProjectDetailApi, getTaskPriority, getTaskStatus, getTaskType } from '../../redux/reducers/ProjectReducer'
 import { http } from '../../util/config'
 import { useParams } from 'react-router'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, DownOutlined, UserOutlined, PlusOutlined } from '@ant-design/icons';
 import { Editor } from "@tinymce/tinymce-react";
 import { useFormik } from 'formik'
+import type { MenuProps } from 'antd';
+
 type Props = {}
 
 const ModalTaskDetail = (props: Props) => {
@@ -27,17 +29,28 @@ const ModalTaskDetail = (props: Props) => {
     })
     const params = useParams()
     const [comment, setComment] = useState()
+    const [trackingTime,setTrackingTime] = useState({
+        timeTrackingSpent:TaskDetail?.timeTrackingSpent,
+        timeTrackingRemaining:TaskDetail?.timeTrackingRemaining
+    })
     const { user } = useSelector((state: RootState) => state.UserReducer);
     const [visibleEditor, setVisibleEditor] = useState(false)
+    const [visibleComment,setVisibleComment] = useState(false)
+    const contentCommet = useRef('')
     const dispatch: DispatchType = useDispatch()
+    // Modal
     const handleCancel = () => {
         dispatch(setModalOpen(false))
+        dispatch(getProjectDetailApi(params.id))
+        dispatch(getTaskDetailByApi(TaskIdDetail))
         setComment(null)
     }
     const handleOk = () => {
         dispatch(setModalOpen(false))
+        dispatch(getProjectDetailApi(params.id))
+        dispatch(getTaskDetailByApi(TaskIdDetail))
     }
-    console.log(params.id)
+
     // Comment
     const handleChangeComment = (e) => {
         const value = e.target.value
@@ -79,9 +92,19 @@ const ModalTaskDetail = (props: Props) => {
         const action = insertComment(data)
         dispatch(action)
         setComment(null)
-
     }
-    // Delete Comment
+    const handleEditcomment = (e) => {
+        contentCommet.current = e.target.value
+        console.log(contentCommet.current)
+    }
+
+    const handleEnterEditcomment = (e,id) => {
+        console.log(e.target.value,id)
+        const action = updateCommentApi(id,e.target.value,TaskDetail.taskId)
+        dispatch(action)
+        e.target.blur()
+    }
+
 
     // Debounce Search
     const searchRef = useRef(null);
@@ -104,21 +127,20 @@ const ModalTaskDetail = (props: Props) => {
         dispatch(actionUpdateEstimate)
 
     }
+    const handleChangeTrackingTime = (e) => {
+        const value = Number(e.target.value)
+        const name = e.target.name
+        dataUpdateTimeTracking.current.taskId = TaskIdDetail
+        dataUpdateTimeTracking.current[name] = value
+      console.log(dataUpdateTimeTracking.current)
+      const action = updateTimeTracking(dataUpdateTimeTracking.current)
+      dispatch(action)
+    }
     // Update Task
-    const dataUpdateTask = useRef({
-        listUserAsign: TaskDetail.assigness.map((member) => {
-            return Number(member.id)
-        }),
-        taskId: TaskDetail.taskId.toString(),
-        taskName: TaskDetail.taskName.toString(),
-        description: TaskDetail.description.toString(),
-        statusId: TaskDetail.statusId.toString(),
-        originalEstimate: Number(TaskDetail.originalEstimate),
-        timeTrackingSpent: Number(TaskDetail.timeTrackingSpent),
-        timeTrackingRemaining: Number(TaskDetail.timeTrackingRemaining),
-        projectId: Number(TaskDetail.projectId),
-        typeId: Number(TaskDetail.typeId),
-        priorityId: Number(params.id)
+    const dataUpdateTimeTracking = useRef({
+        taskId:TaskDetail.taskId,
+        timeTrackingSpent:TaskDetail?.timeTrackingSpent,
+        timeTrackingRemaining:TaskDetail?.timeTrackingRemaining
     })
     const renderEditor = () => {
         return <div>
@@ -156,16 +178,52 @@ const ModalTaskDetail = (props: Props) => {
             }
         </div>
     }
+    // Formik
     const form = useFormik({
         initialValues: {
-            description: ''
+            description: '',
+            timeTrackingSpent: null,
+            timeTrackingRemaining: null
         },
         onSubmit: (value) => {
             console.log(value)
         }
     })
+    // Dropdown Assign
+
+
+    const handleMenuClick: MenuProps['onClick'] = (e) => {
+        const data = {
+            taskId: TaskIdDetail,
+            userId: Number(e.key)
+        }
+        dispatch(addUserFromTaskApi(data, params.id))
+    };
+    const arrayAssign = detailProjectById?.members.filter((mem) => {
+        let index = TaskDetail?.assigness.findIndex(us => us.id === mem.userId)
+        if (index != -1) {
+            return false
+        }
+        return true
+    }).map((mem, index) => {
+        return {
+            label: mem.name,
+            key: mem.userId.toString()
+        }
+    })
+
+    const items: MenuProps['items'] = arrayAssign
+
+
+
+    const menuProps = {
+        items,
+        onClick: handleMenuClick,
+    };
+
     return (<>
-        <Modal title={TaskDetail?.taskName} open={ModalOpen} onOk={handleOk} okText='Update' onCancel={handleCancel} width={980}>
+        <Modal title={TaskDetail?.taskName} open={ModalOpen} onOk={handleOk} cancelText='Cancel' okText='Update' onCancel={handleCancel} width={980}>
+
             <div className="modal-header">
                 <div className="task-title">
                     <i className="fa fa-bookmark text-success"></i>
@@ -200,16 +258,22 @@ const ModalTaskDetail = (props: Props) => {
                                         setVisibleEditor(!visibleEditor)
                                         const des = form.getFieldProps('description').value
                                         const data = {
-                                            taskId:Number(TaskIdDetail),
+                                            taskId: Number(TaskIdDetail),
                                             description: des,
-                                        } 
-                                        console.log(data)  
-                                        dispatch(updateDescriptionApi(data,TaskIdDetail))
-                                        
+                                        }
+                                        console.log(data)
+                                        dispatch(updateDescriptionApi(data, TaskIdDetail))
+
                                     }}>Cập nhật</button> : <button className="btn btn-primary my-3" onClick={() => {
                                         setVisibleEditor(!visibleEditor)
                                     }}>Chỉnh sửa</button>}
                                 </div>
+
+
+
+
+
+
                             </div>
                             <div className="comment">
                                 <p style={{ fontWeight: 'bold' }}>Comment</p>
@@ -236,13 +300,22 @@ const ModalTaskDetail = (props: Props) => {
                                         <div className='col-11'>
                                             <div key={index} className='d-flex' >
                                                 <div className="comment-item mr-2">
-
                                                     <p className='mb-2'>{comment?.user?.name}  <span>a month ago</span></p>
-                                                    <p>{comment.contentComment}</p>
+                                                    {!visibleComment ?<p>{comment.contentComment}</p> : <Input className='editComment' onBlur = {() => {
+                                                        setVisibleComment(false)
+                                                    }} onChange={handleEditcomment} 
+                                                    onPressEnter = {(e) => {
+                                                        handleEnterEditcomment(e,comment.id)
+                                                    }}
+                                                    defaultValue={comment.contentComment}/> }
+                                                    
 
                                                 </div>
                                                 <div className="button-comment-block d-flex">
-                                                    <Button type='text' icon={<EditOutlined />} style={{ border: 'none', color: 'blue' }}>
+                                                    <Button onClick={() => {
+                                                        setVisibleComment(!visibleComment)
+                                                       
+                                                    }} type='text' icon={<EditOutlined />} style={{ border: 'none', color: 'blue' }}>
 
                                                     </Button>
                                                     <Button onClick={() => {
@@ -299,46 +372,14 @@ const ModalTaskDetail = (props: Props) => {
                                     </Tag>
 
                                 })}
-                                <Popover
-                                    placement="topLeft"
-                                    title={"Add user"}
-                                    content={() => {
-                                        return (
-                                            <AutoComplete
-                                                options={user?.map((us, index) => {
-                                                    return { label: us.name, value: us.userId.toString() };
-                                                })}
-                                                value={value}
-                                                onChange={(text) => {
-                                                    setValue(text);
-                                                }}
-                                                onSelect={(valueSelect, option) => {
-                                                    setValue(option.label);
-                                                    const data = {
-                                                        taskId: TaskIdDetail,
-                                                        userId: Number(valueSelect)
-                                                    }
-                                                    dispatch(addUserFromTaskApi(data, params.id))
-                                                }}
-                                                style={{ width: "100%" }}
-                                                onSearch={(value) => {
-                                                    if (searchRef.current) {
-                                                        clearInterval(searchRef.current);
-                                                    }
-                                                    searchRef.current = setTimeout(() => {
-                                                        dispatch(getUserApi(value));
-                                                    }, 300);
-                                                }}
-                                            />
-                                        );
-                                    }}
-                                    trigger="click"
-
-                                >
-                                    <button className='btn' ><i className="fa fa-plus"></i> Add more</button>
-                                </Popover>
-
-
+                                <Dropdown menu={menuProps}>
+                                    <Button>
+                                        <Space>
+                                            Add more
+                                            <PlusOutlined />
+                                        </Space>
+                                    </Button>
+                                </Dropdown>
 
 
 
@@ -370,7 +411,7 @@ const ModalTaskDetail = (props: Props) => {
                                         <i className="fa fa-clock"></i>
                                     </div>
                                     <div className="col-11">
-                                        <Slider value={Number(TaskDetail.timeTrackingSpent)} min={0} max={Number(TaskDetail?.timeTrackingSpent) + Number(TaskDetail.timeTrackingRemaining)} />
+                                        <Slider value={Number(TaskDetail?.timeTrackingSpent)} min={0} max={Number(TaskDetail?.timeTrackingSpent) + Number(TaskDetail?.timeTrackingRemaining)} />
                                     </div>
 
                                 </div>
@@ -379,7 +420,7 @@ const ModalTaskDetail = (props: Props) => {
                                         {TaskDetail?.timeTrackingSpent}h logged
                                     </div>
                                     <div className="col-6 text-end">
-                                        {TaskDetail?.timeTrackingSpent}h remaining
+                                        {TaskDetail?.timeTrackingRemaining}h remaining
                                     </div>
 
 
@@ -387,10 +428,38 @@ const ModalTaskDetail = (props: Props) => {
                             </div>
                             <div className="row">
                                 <div className="col-6">
-                                    <Input placeholder="Timetracking" />
+                                    <Input type='number' min={0} placeholder="Tracking"
+                                    value={trackingTime.timeTrackingSpent}
+                                        name='timeTrackingSpent' onChange={(e) => {
+                                            setTrackingTime((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    timeTrackingSpent:Number(e.target.value)
+                                                }
+                                            })
+                                            form.setFieldValue('timeTrackingSpent', e.target.value)
+                                        }}
+                                        
+                                   
+                                        onPressEnter={handleChangeTrackingTime}
+                                    />
                                 </div>
                                 <div className="col-6">
-                                    <Input placeholder="Timeremaining" />
+                                    <Input type='number' min={0} placeholder="Remaining" 
+                                    value={trackingTime.timeTrackingRemaining}name='timeTrackingRemaining' onChange={(e) => {
+                                        setTrackingTime((prev) => {
+                                            return {
+                                                ...prev,
+                                                timeTrackingRemaining:Number(e.target.value)
+                                            }
+                                        })
+                                        form.setFieldValue('timeTrackingRemaining', e.target.value)
+                                    }}
+                           
+
+                                        onPressEnter={handleChangeTrackingTime}
+                                     
+                                    />
 
                                 </div>
                             </div>

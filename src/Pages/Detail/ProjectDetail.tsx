@@ -11,7 +11,7 @@ import ReactHtmlParser, {
   convertNodeToElement,
   htmlparser2,
 } from "react-html-parser";
-import { getAllCommentApi, getTaskDetailByApi, getTaskDetailIdAction } from '../../redux/reducers/TaskReducer'
+import { getAllCommentApi, getTaskDetailByApi, getTaskDetailIdAction, removeTask } from '../../redux/reducers/TaskReducer'
 import { addUserApi, deleteUserApi, getUserApi, setModalOpen } from '../../redux/reducers/UserReducer'
 import ModalTaskDetail from './ModalTaskDetail'
 
@@ -37,9 +37,9 @@ const ProjectDetail = (props: Props) => {
   return (
     <>
       <div className='projectDetail-container'>
-        <h3 className='mb-4' style={{fontSize:30,fontWeight:'bold'}}>Cyber Board</h3>
+        <h3 className='mb-4' style={{ fontSize: 30, fontWeight: 'bold' }}>Cyber Board</h3>
         <div className="projectDetail-header">
-          <h5 style={{fontWeight:'bold'}}>{detailProjectById?.projectName}</h5>
+          <h5 style={{ fontWeight: 'bold' }}>{detailProjectById?.projectName}</h5>
           <div className="projectDetail-wrap d-flex">
             <Search
               placeholder="input search text"
@@ -85,7 +85,7 @@ const ProjectDetail = (props: Props) => {
                                         deleteUserApi({
                                           projectId: Number(param.id),
                                           userId: item.userId,
-                                        },param.id)
+                                        }, param.id)
                                       );
                                       dispatch(getProjectDetailApi(param.id))
                                     }}
@@ -101,13 +101,13 @@ const ProjectDetail = (props: Props) => {
                     );
                   }}
                 >
-                     <Avatar
-                  key={index}
-                  src={member?.avatar}
-                  style={{ marginTop: 20, marginLeft: 10 }}
-                ></Avatar>
+                  <Avatar
+                    key={index}
+                    src={member?.avatar}
+                    style={{ marginTop: 20, marginLeft: 10 }}
+                  ></Avatar>
                 </Popover>
-             
+
               );
             })}
             <div style={{ marginTop: 20, marginLeft: 15 }}>
@@ -132,7 +132,7 @@ const ProjectDetail = (props: Props) => {
                           addUserApi({
                             projectId: Number(param.id),
                             userId: Number(valueSelect),
-                          },param.id)
+                          }, param.id)
                         );
                         dispatch(getProjectDetailApi(param.id))
                       }}
@@ -174,33 +174,45 @@ const ProjectDetail = (props: Props) => {
                 <div className="card-header">
                   <p className='card-title'>{item?.statusName}</p>
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{ padding: 8, background: '#f7f7f7' }}>
 
                   {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
-                    return <li onClick={() => {
-                      const actionTaskId = getTaskDetailIdAction(lstTask.taskId)
-                      dispatch(actionTaskId)
-                      const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
-                      dispatch(actionTaskDetail)
-                      dispatch(setModalOpen(true))
+                    return <div>
+                      <li onClick={() => {
+                        const actionTaskId = getTaskDetailIdAction(lstTask.taskId)
+                        dispatch(actionTaskId)
+                        const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
+                        dispatch(actionTaskDetail)
+                        dispatch(setModalOpen(true))
 
-                    }} key={index} className="list-group-item p-4" style={{ cursor: 'pointer' }}>
-                      <p className='mb-3'>{ReactHtmlParser(lstTask?.taskName)}</p>
-                      <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
-                        <div className="block-left">
-                          <p className='text-danger'>{lstTask.priorityTask.priority}</p>
+                      }} key={index} className="list-group-item p-4 mb-2" style={{ cursor: 'pointer', background: 'white' }}>
+                        <div className="block-task-name row mb-2" style={{justifyContent:'space-between'}}>
+                       
+                        <p className='mb-3 col-4'>{ReactHtmlParser(lstTask?.taskName)}</p>
+                       <div className='col-4'></div>
+                        <button style={{transform:'translateY(-8px)'}} className='btn delete-task text-danger col-4' onClick={(e) => {
+                          e.stopPropagation()
+                          dispatch(removeTask(lstTask.taskId,param.id))
+                        }}>Delete</button>
                         </div>
-                        <div className="block-right">
-                          <div className="avatar-group">
-                            {lstTask?.assigness.map((memberAssign, index) => {
-                              return <Avatar key={index} className='avatar' src={memberAssign?.avatar}>
-                              </Avatar>
-                            })}
+                     
+
+                        <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
+                          <div className="block-left">
+                            <p className='text-danger'>{lstTask.priorityTask.priority}</p>
+                          </div>
+                          <div className="block-right">
+                            <div className="avatar-group">
+                              {lstTask?.assigness.map((memberAssign, index) => {
+                                return <Avatar key={index} className='avatar' src={memberAssign?.avatar}>
+                                </Avatar>
+                              })}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </li>
+                      </li>
 
+                    </div>
                   })}
 
 

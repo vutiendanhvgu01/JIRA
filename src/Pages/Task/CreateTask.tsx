@@ -270,7 +270,7 @@ const CreateTask: React.FC = (props: Props) => {
               })}
             />
           </div>
-          <Button type="primary" htmlType="submit" size="large">
+          <Button onSubmit={form.handleSubmit} type="primary" htmlType="submit" size="large">
             Submit
           </Button>
         </form>

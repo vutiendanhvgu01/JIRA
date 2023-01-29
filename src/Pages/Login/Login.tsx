@@ -6,8 +6,8 @@ import {
   FacebookOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
-import Input from "antd/es/input/Input";
-import { Button } from "antd";
+import { Button, Input, Space } from 'antd';
+
 // import { history } from "../..";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -96,7 +96,8 @@ const Login = (props: Props) => {
             </div>
             <div className="form-group">
               <p>Password</p>
-              <Input
+              <Input.Password
+                style={{width:'225px'}}
                 name="passWord"
                 size="large"
                 prefix={<LockOutlined />}
@@ -111,7 +112,7 @@ const Login = (props: Props) => {
             <div className="form-group pt-5">
               <p>
                 Do not have an account yet!
-                <NavLink to="/register"> Register now !</NavLink>
+                <NavLink to="/register" style={{fontWeight:'bold italic'}}> Register now !</NavLink>
               </p>
             </div>
             <div className="form-group">
