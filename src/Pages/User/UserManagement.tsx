@@ -111,13 +111,13 @@ const UserManagement = (props: Props) => {
       title: "Action",
       key: "Action",
       render: (_, record, index) => {
-        console.log(record);
         return (
           <button className="btn btn-danger mr-2">
             <DeleteOutlined
               className="bg-danger"
               style={{ fontSize: 17 }}
               onClick={() => {
+                console.log(record.userId);
                 dispatch(deleteUserManagementAPI(record.userId));
               }}
             />

@@ -202,24 +202,29 @@ export const getUserByProjectIdApi = (id: string) => {
 };
 export const registerApi = (userRegister: RegisterModel) => {
   return async (dispatch: DispatchType) => {
-    const result = await axios({
-      url: "https://jiranew.cybersoft.edu.vn/api/Users/signup",
-      method: "post",
-      data: userRegister,
-      headers: {
-        TokenCybersoft: TOKEN_CYBERSOFT,
-      },
-    });
-    console.log(result.data.content);
+    try {
+      const result = await axios({
+        url: "https://jiranew.cybersoft.edu.vn/api/Users/signup",
+        method: "post",
+        data: userRegister,
+        headers: {
+          TokenCybersoft: TOKEN_CYBERSOFT,
+        },
+      });
+      console.log(result.data.content);
+      notifiFucntion("success", "Register successfully !");
+    } catch (err) {
+      notifiFucntion("error", "Register fail !");
+    }
   };
 };
 export const deleteUserManagementAPI = (id: number) => {
   return async (dispatch: DispatchType) => {
     try {
       const result = await axios({
-        url: "https://jiranew.cybersoft.edu.vn/api/Users/deleteUser",
+        url: `https://jiranew.cybersoft.edu.vn/api/Users/deleteUser?id=${id}`,
         method: "delete",
-        data: id,
+
         headers: {
           TokenCybersoft: TOKEN_CYBERSOFT,
           Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
@@ -228,6 +233,7 @@ export const deleteUserManagementAPI = (id: number) => {
       console.log(result.data.content);
       dispatch(getUserApi(""));
       notifiFucntion("success", "Delete user successfully !");
+      history.push("/");
     } catch (err) {
       notifiFucntion("error", "Delete user fail !");
     }
