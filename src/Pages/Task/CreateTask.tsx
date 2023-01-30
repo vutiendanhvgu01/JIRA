@@ -1,5 +1,5 @@
 import { Input, InputNumber, Select, Slider } from "antd";
-import React, { useRef, useState,useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import type { SelectProps } from "antd";
 import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,35 +17,32 @@ const optionsAssigner: SelectProps["options"] = [];
 type Props = {};
 
 const CreateTask: React.FC = (props: Props) => {
+  useEffect(() => {
+    const action1 = getAllProject();
+    dispatch(action1);
+  }, []);
   const dispatch: DispatchType = useDispatch();
   const { allProjects, statusTask, taskType, Priority } = useSelector(
     (state: RootState) => {
       return state.ProjectReducer;
     }
   );
-  const {userByProjectId } = useSelector(
+  const { userByProjectId } = useSelector(
     (state: RootState) => {
       return state.UserReducer;
     }
   );
-  useEffect(() => {
-    const action1 = getAllProject();
-    dispatch(action1);
-
-
-  }, []);
   const assignRef = useRef<string>(null);
   const editorRef = useRef(null);
   const editorValue = useRef(null);
-  const [timeTracking,setTimeTracking] = useState({
-    timeTrackingSpent:0,
-    timeTrackingRemaining:0,
+  const [timeTracking, setTimeTracking] = useState({
+    timeTrackingSpent: 0,
+    timeTrackingRemaining: 0,
   })
-
   const handleChangeAntd = (value: string) => {
     console.log(value);
     assignRef.current = value;
-    form.setFieldValue('listUserAsign',value)
+    form.setFieldValue('listUserAsign', value)
   };
   if (editorRef.current) {
     editorValue.current = editorRef.current
@@ -54,31 +51,28 @@ const CreateTask: React.FC = (props: Props) => {
       .replace(/(<p>)*/g, "")
       .replace(/<(\/)?p[^>]*>/g, "");
   }
-
-
-
   const form = useFormik({
     initialValues: {
-      listUserAsign:[0],
+      listUserAsign: [0],
       taskName: "",
       description: '',
       statusId: '1',
-      originalEstimate:1,
+      originalEstimate: 1,
       timeTrackingSpent: 1,
       timeTrackingRemaining: 1,
-      projectId:  '',
+      projectId: '',
       typeId: 1,
-      priorityId:1,
+      priorityId: 1,
     },
     validationSchema: yup.object().shape({}),
     onSubmit: (values) => {
       values.description = editorRef.current.getContent()
       const data = {
-        listUserAsign:values.listUserAsign,
+        listUserAsign: values.listUserAsign,
         taskName: values.taskName,
         description: values.description,
         statusId: values.statusId.toString(),
-        originalEstimate:Number(values.originalEstimate),
+        originalEstimate: Number(values.originalEstimate),
         timeTrackingSpent: Number(values.timeTrackingSpent),
         timeTrackingRemaining: Number(values.timeTrackingRemaining),
         projectId: Number(values.projectId),
@@ -90,32 +84,30 @@ const CreateTask: React.FC = (props: Props) => {
       dispatch(action)
     },
   });
-
   const handleChangeInput = (e) => {
-    const value= e.target.value
+    const value = e.target.value
     const name = e.target.name
-    console.log(name,value)
+    console.log(name, value)
     setTimeTracking((prev) => {
       return {
         ...prev,
         [name]: value,
-
       }
     })
     form.setFieldValue(name, Number(value))
-   };
-   const handleChangeProject = (e) => {
+  };
+  const handleChangeProject = (e) => {
     const value = e.target.value
     const action = getUserByProjectIdApi(value)
     dispatch(action)
     console.log(value)
-    form.setFieldValue('projectId',Number(value))
+    form.setFieldValue('projectId', Number(value))
     console.log(userByProjectId)
-   }
+  }
   return (
     <>
       <div className="createTask-content">
-        <h5 className="mb-3" style={{fontWeight:'bold',fontSize:30}}>Create Task</h5>
+        <h5 className="mb-3" style={{ fontWeight: 'bold', fontSize: 30 }}>Create Task</h5>
         <form onSubmit={form.handleSubmit} className="form-createTask">
           <div className="form-group">
             <p className="title-createTask">Project</p>
@@ -128,8 +120,8 @@ const CreateTask: React.FC = (props: Props) => {
                 placeholder='Choose a project'
               >
                 <option value="" disabled selected>Select your option</option>
-                {allProjects?.map((item: projectAll,index:number) => {
-                  return <option key={index}  value={item.id}>{item.projectName}</option>;
+                {allProjects?.map((item: projectAll, index: number) => {
+                  return <option key={index} value={item.id}>{item.projectName}</option>;
                 })}
               </select>
               <CaretDownOutlined className="arrowDown" />
@@ -153,7 +145,7 @@ const CreateTask: React.FC = (props: Props) => {
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
               >
-                {statusTask?.map((item: Status,index:number) => {
+                {statusTask?.map((item: Status, index: number) => {
                   return (
                     <option key={index} value={item.statusId}>{item.statusName}</option>
                   );
@@ -174,7 +166,7 @@ const CreateTask: React.FC = (props: Props) => {
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
                     >
-                      {Priority?.map((item: PriorityTask,index:number) => {
+                      {Priority?.map((item: PriorityTask, index: number) => {
                         return (
                           <option key={index} value={item.priorityId}>
                             {item.priority}
@@ -198,7 +190,7 @@ const CreateTask: React.FC = (props: Props) => {
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
                     >
-                      {taskType?.map((item: TypeTask,index:number) => {
+                      {taskType?.map((item: TypeTask, index: number) => {
                         return <option key={index} value={item.id}>{item.taskType}</option>;
                       })}
                     </select>
@@ -209,7 +201,7 @@ const CreateTask: React.FC = (props: Props) => {
             </div>
             <div className="timeTrackingWrap">
               <p>Time Tracking</p>
-              <Slider  value={Number(timeTracking.timeTrackingSpent)} min={0} max={Number(timeTracking.timeTrackingSpent)+ Number(timeTracking.timeTrackingRemaining)} />
+              <Slider value={Number(timeTracking.timeTrackingSpent)} min={0} max={Number(timeTracking.timeTrackingSpent) + Number(timeTracking.timeTrackingRemaining)} />
               <div className="row mb-4">
                 <div className="col-6 text-left">
                   {timeTracking.timeTrackingSpent}h logged
@@ -219,9 +211,9 @@ const CreateTask: React.FC = (props: Props) => {
                 </div>
               </div>
               <div className="time-estimate row">
-              <div className="col-4">
+                <div className="col-4">
                   <p>Original Estimate</p>
-                  <input type='number' className=" w-100 py-2 ps-3" name='originalEstimate' onChange={handleChangeInput} onBlur={form.handleBlur}  min={0} max={100000} defaultValue={0} />
+                  <input type='number' className=" w-100 py-2 ps-3" name='originalEstimate' onChange={handleChangeInput} onBlur={form.handleBlur} min={0} max={100000} defaultValue={0} />
                 </div>
                 <div className="col-4">
                   <p>Time spent {`(hours)`}</p>
@@ -230,9 +222,9 @@ const CreateTask: React.FC = (props: Props) => {
                 </div>
                 <div className="col-4">
                   <p>Time remaining {`(hours)`}</p>
-                  <input type='number' className="w-100  py-2 ps-3" name='timeTrackingRemaining' onChange={handleChangeInput} onBlur={form.handleBlur}  min={0} max={100000} defaultValue={0} />
+                  <input type='number' className="w-100  py-2 ps-3" name='timeTrackingRemaining' onChange={handleChangeInput} onBlur={form.handleBlur} min={0} max={100000} defaultValue={0} />
                 </div>
-            
+
               </div>
             </div>
           </div>
@@ -260,14 +252,14 @@ const CreateTask: React.FC = (props: Props) => {
             <p className="title-createTask">Assigners</p>
             <Select
               mode="tags"
-              
+
               style={{ width: "100%" }}
               onChange={handleChangeAntd}
               tokenSeparators={[","]}
-              options = {userByProjectId?.map((user:UserByProjectId) => {
+              options={userByProjectId?.map((user: UserByProjectId) => {
                 return {
                   value: user.userId,
-                  label:user.name
+                  label: user.name
                 }
               })}
             />

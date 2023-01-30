@@ -14,7 +14,6 @@ export interface RegisterModel {
   name: string;
   phoneNumber: string;
 }
-
 const { Sider, Content } = Layout;
 const Register = (props: Props) => {
   const dispatch: DispatchType = useDispatch();
@@ -51,7 +50,6 @@ const Register = (props: Props) => {
       dispatch(registerApi(values));
     },
   });
-
   return (
     <>
       <Layout>
