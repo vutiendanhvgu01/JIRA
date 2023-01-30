@@ -129,7 +129,7 @@ const UserManagement = (props: Props) => {
   return (
     <>
       <div className="text-center">
-        <h1>USER MANAGEMENT</h1>
+        <h1 style={{fontSize:'30px',fontWeight:'bold'}}>USER MANAGEMENT</h1>
       </div>
       <div className="mt-5">
         {/* <Space style={{ marginBottom: 16 }}>

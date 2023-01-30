@@ -124,9 +124,9 @@ const HomeTemplate: React.FC = (props: Props) => {
           style={{ height: "150vh" }}
           theme={theme}
         >
-          <div className={`profile-info`} id="home-info">
-            <div className={classNameFunction(theme)}>
-              <img src={userLogin?.avatar} alt="..." />
+          <div className={`profile-info ms-2`} id="home-info">
+            <div className={classNameFunction(theme) }>
+              <img className='mb-3' src={userLogin?.avatar} alt="..." />
               <h4>{userLogin?.name}</h4>
               <p>{userLogin?.email}</p>
 

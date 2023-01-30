@@ -20,7 +20,7 @@ const Profile = (props: Props) => {
         <div className="title-profile" style={{ textAlign: "center" }}>
           <h1
             style={{
-              fontSize: "50px",
+              fontSize: "30px",
               fontWeight: "bold",
               marginBottom: "25px",
             }}
@@ -31,8 +31,9 @@ const Profile = (props: Props) => {
         <div className="profile-wrap row">
           <div className="col-lg-6 col-xs-12 col-md-12 col-sm-12">
             <img
-              width={200}
-              height={200}
+            className='ms-4'
+              width={300}
+              height={300}
               style={{ borderRadius: "50%", transform: "translateX(38%)" }}
               src={userLogin.avatar}
               alt="..."

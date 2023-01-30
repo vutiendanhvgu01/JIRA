@@ -7,7 +7,7 @@ import {
   TwitterOutlined,
 } from "@ant-design/icons";
 import { Button, Input, Space } from 'antd';
-
+import { createFromIconfontCN } from '@ant-design/icons';
 // import { history } from "../..";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -22,7 +22,9 @@ export interface UserLoginModel {
   email: string;
   passWord: string;
 }
-
+const IconFont = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
+});
 const Login = (props: Props) => {
   // const handleLogin = () => {
   //   history.push("/home");
@@ -77,9 +79,9 @@ const Login = (props: Props) => {
           <form
             onSubmit={form.handleSubmit}
             className="container d-flex justify-content-center align-items-center"
-            style={{ flexDirection: "column", paddingTop: "200px" }}
+            style={{ flexDirection: "column", paddingTop: "280px" }}
           >
-            <h3>Login</h3>
+            <h3 className='mb-3' style={{fontSize:'25px',fontWeight:'500'}}>Login</h3>
             <div className="form-group">
               <p>User name</p>
               <Input
@@ -109,9 +111,9 @@ const Login = (props: Props) => {
                 <p className="text-danger">{form.errors.passWord}</p>
               )}
             </div>
-            <div className="form-group pt-5">
+            <div className="form-group mt-3">
               <p>
-                Do not have an account yet!
+                Don't have an account yet!
                 <NavLink to="/register">
                   <span className="text-primary"> Register now !</span>
                 </NavLink>
@@ -122,7 +124,7 @@ const Login = (props: Props) => {
                 onSubmit={form.handleSubmit}
                 htmlType="submit"
                 size="large"
-                className="mt-5"
+                className="mt-3"
                 style={{ backgroundColor: "rgb(102,117,223" }}
                 // onClick={() => {
                 //   handleLogin();
@@ -135,10 +137,11 @@ const Login = (props: Props) => {
               <Button
                 shape="circle"
                 className="font-weight-bold"
-                style={{ backgroundColor: "rgb(59,89,152", color: "black" }}
-                icon={<FacebookOutlined />}
+                style={{ backgroundColor: "rgb(59,89,152", color: "white" }}
+                icon={<FacebookOutlined style={{transform:'translateY(-3px)',fontSize:'20px'}}/>}
                 size="large"
               ></Button>
+        
               <Button
                 type="primary"
                 className="ms-3 font-weight-bold"
