@@ -69,9 +69,10 @@ http.interceptors.response.use(
     //Bắt lỗi 400 hoặc 404
     if (err.response?.status === 400 || err.response?.status === 404) {
       //Lỗi do tham số => backend trả về 400 hoặc 404 mình sẽ xử lý
-      alert("tham số không hợp lệ !");
+
       //chuyển hướng về home
       // history.push("/");
+      notifiFucntion("error", "Tham số không hợp lệ !");
     }
     if (err?.response?.status === 401 || err.response?.status === 403) {
       // removeStore(ACCESS_TOKEN);
@@ -79,12 +80,28 @@ http.interceptors.response.use(
       //Chuyển hướng trang dạng f5
       // window.location.href = "";
       // history.push("/");
-      alert("Không hợp lệ!");
     }
+    notifiFucntion("error", "Quyền truy cập không hợp lệ !");
     return Promise.reject(err);
   }
 );
-
+export const catchErro = (erro: number) => {
+  console.log(erro);
+  if (erro === 400 || erro === 404) {
+    //Lỗi do tham số => backend trả về 400 hoặc 404 mình sẽ xử lý
+    alert("tham số không hợp lệ !");
+    //chuyển hướng về home
+    // history.push("/");
+  }
+  if (erro === 401 || erro === 403) {
+    // removeStore(ACCESS_TOKEN);
+    // removeStore(USER_LOGIN);
+    //Chuyển hướng trang dạng f5
+    // window.location.href = "";
+    // history.push("/");
+    alert("Không hợp lệ!");
+  }
+};
 /* Các status code thường gặp
     200: Request gửi đi và nhận về kết quả thành
     201: request gửi đi thành công và đã được khởi tạo 

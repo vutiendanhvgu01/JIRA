@@ -110,11 +110,11 @@ const UserManagement = (props: Props) => {
         <h1>USER MANAGEMENT</h1>
       </div>
       <div className="mt-5">
-        <Space style={{ marginBottom: 16 }}>
+        {/* <Space style={{ marginBottom: 16 }}>
           <Button onClick={setAgeSort}>Sort age</Button>
           <Button onClick={clearFilters}>Clear filters</Button>
           <Button onClick={clearAll}>Clear filters and sorters</Button>
-        </Space>
+        </Space> */}
         <Table
           columns={columns}
           rowKey={"id"}

@@ -10,6 +10,7 @@ import {
   ACCESS_TOKEN,
   getStore,
   http,
+  catchErro,
 } from "../../util/config";
 import { notifiFucntion } from "../../util/notificationCyberBug";
 import { DispatchType, RootState } from "../configStore";
@@ -91,7 +92,7 @@ const initialState = {
   categoryProject: [],
   createProject: null,
   allProjects: null,
-  statusTask:  null,
+  statusTask: null,
   taskType: null,
   Priority: null,
   projectDetail: [],
@@ -103,7 +104,7 @@ const initialState = {
     categoryId: "2",
   },
   detailProjectById: null,
-  createTask:null,
+  createTask: null,
 };
 
 const ProjectReducer = createSlice({
@@ -152,10 +153,12 @@ const ProjectReducer = createSlice({
     ) => {
       state.projectEdit = action.payload;
     },
-    getDetailProjectById: (state:ProjectState,action:PayloadAction<TypeProjectDetail>) => {
+    getDetailProjectById: (
+      state: ProjectState,
+      action: PayloadAction<TypeProjectDetail>
+    ) => {
       state.detailProjectById = action.payload;
     },
- 
   },
 });
 
@@ -173,18 +176,26 @@ export const {
 export default ProjectReducer.reducer;
 export const createTaskApi = (data: CreateTypeTask) => {
   return async () => {
-    const result = await axios({
-      url: "https://jiranew.cybersoft.edu.vn/api/Project/createTask",
-      method: "post",
-      data: data,
-      headers: {
-        TokenCybersoft: TOKEN_CYBERSOFT,
-        Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
-      },
-    });
-    console.log(result.data.content);
-    notifiFucntion("success", "Create task success");
-    history.push(`/home/projectdetail/${data.projectId}`)
+    try {
+      const result = await axios({
+        url: "https://jiranew.cybersoft.edu.vn/api/Project/createTask",
+        method: "post",
+        data: data,
+        headers: {
+          TokenCybersoft: TOKEN_CYBERSOFT,
+          Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
+        },
+      });
+      console.log(result.data.content);
+      notifiFucntion("success", "Create task success");
+
+      console.log(result.data.statusCode);
+      history.push(`/home/projectdetail/${data.projectId}`);
+    } catch (err) {
+      // console.log(err);
+      // alert("Quyền truy cập không hợp lệ !");
+      notifiFucntion("error", "Quyền truy cập không hợp lệ !");
+    }
   };
 };
 export const getProjectCategoryApi = () => {
@@ -219,17 +230,21 @@ export const getAllProjectAPI = () => {
 };
 export const createProjectAPI = (createProject: Project) => {
   return async () => {
-    const result = await axios({
-      url: "https://jiranew.cybersoft.edu.vn/api/Project/createProjectAuthorize",
-      method: "post",
-      data: createProject,
-      headers: {
-        TokenCybersoft: TOKEN_CYBERSOFT,
-        Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
-      },
-    });
-    console.log(result.data.content);
-    notifiFucntion("success", "Create project success");
+    try {
+      const result = await axios({
+        url: "https://jiranew.cybersoft.edu.vn/api/Project/createProjectAuthorize",
+        method: "post",
+        data: createProject,
+        headers: {
+          TokenCybersoft: TOKEN_CYBERSOFT,
+          Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
+        },
+      });
+      console.log(result.data.content);
+      notifiFucntion("success", "Create project success");
+    } catch (err) {
+      notifiFucntion("error", "Trùng tên project");
+    }
   };
 };
 
@@ -291,22 +306,26 @@ export const getTaskPriority = () => {
 };
 export const updateProjectAPI = (projectUpdate: ProjectEdit) => {
   return async (dispatch: DispatchType) => {
-    const result = await axios({
-      url: `https://jiranew.cybersoft.edu.vn/api/Project/updateProject?projectId=${projectUpdate.id}`,
-      method: "put",
-      data: projectUpdate,
-      headers: {
-        TokenCybersoft: TOKEN_CYBERSOFT,
-        Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
-      },
-    });
-    console.log(result.data.content);
-    const action = getAllProjectAPI();
-    dispatch({
-      type: "CLOSE_DRAWER",
-    });
-    dispatch(action)
-    notifiFucntion("success", "Update project success");
+    try {
+      const result = await axios({
+        url: `https://jiranew.cybersoft.edu.vn/api/Project/updateProject?projectId=${projectUpdate.id}`,
+        method: "put",
+        data: projectUpdate,
+        headers: {
+          TokenCybersoft: TOKEN_CYBERSOFT,
+          Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
+        },
+      });
+      console.log(result.data.content);
+      const action = getAllProjectAPI();
+      dispatch({
+        type: "CLOSE_DRAWER",
+      });
+      dispatch(action);
+      notifiFucntion("success", "Update project success");
+    } catch (err) {
+      notifiFucntion("error", "Update project fail");
+    }
   };
 };
 export const deleteProjectAPI = (projectUpdate: number) => {
@@ -326,11 +345,13 @@ export const deleteProjectAPI = (projectUpdate: number) => {
     notifiFucntion("success", "Delete project success");
   };
 };
-export const getProjectDetailApi = (id:string|number) => {
-  return async (dispatch:DispatchType) => {
-    const result = await http.get(`https://jiranew.cybersoft.edu.vn/api/Project/getProjectDetail?id=${id}`)
+export const getProjectDetailApi = (id: string | number) => {
+  return async (dispatch: DispatchType) => {
+    const result = await http.get(
+      `https://jiranew.cybersoft.edu.vn/api/Project/getProjectDetail?id=${id}`
+    );
     console.log(result.data.content);
-    const action = getDetailProjectById(result.data.content)
+    const action = getDetailProjectById(result.data.content);
     dispatch(action);
-  }
-}
+  };
+};
