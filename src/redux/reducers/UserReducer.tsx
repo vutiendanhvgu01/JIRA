@@ -141,7 +141,7 @@ export const getUserApi = (keyword: string) => {
     console.log(result.data.content);
   };
 };
-export const addUserApi = (addUser: AddUser,value) => {
+export const addUserApi = (addUser: AddUser, value) => {
   return async (dispatch: DispatchType) => {
     const result = await axios({
       url: `https://jiranew.cybersoft.edu.vn/api/Project/assignUserProject`,
@@ -152,13 +152,13 @@ export const addUserApi = (addUser: AddUser,value) => {
         Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
       },
     });
-    console.log(value)
+    console.log(value);
     dispatch(getAllProjectAPI());
-    dispatch(getProjectDetailApi(value))
+    dispatch(getProjectDetailApi(value));
     console.log(result.data.content);
   };
 };
-export const deleteUserApi = (deleteUser: AddUser,value) => {
+export const deleteUserApi = (deleteUser: AddUser, value) => {
   return async (dispatch: DispatchType) => {
     const result = await axios({
       url: `https://jiranew.cybersoft.edu.vn/api/Project/removeUserFromProject`,
@@ -170,7 +170,7 @@ export const deleteUserApi = (deleteUser: AddUser,value) => {
       },
     });
     dispatch(getAllProjectAPI());
-    dispatch(getProjectDetailApi(value))
+    dispatch(getProjectDetailApi(value));
     console.log(result.data.content);
   };
 };
@@ -211,5 +211,25 @@ export const registerApi = (userRegister: RegisterModel) => {
       },
     });
     console.log(result.data.content);
+  };
+};
+export const deleteUserManagementAPI = (id: number) => {
+  return async (dispatch: DispatchType) => {
+    try {
+      const result = await axios({
+        url: "https://jiranew.cybersoft.edu.vn/api/Users/deleteUser",
+        method: "delete",
+        data: id,
+        headers: {
+          TokenCybersoft: TOKEN_CYBERSOFT,
+          Authorization: `Bearer ${getStore(ACCESS_TOKEN)}`,
+        },
+      });
+      console.log(result.data.content);
+      dispatch(getUserApi(""));
+      notifiFucntion("success", "Delete user successfully !");
+    } catch (err) {
+      notifiFucntion("error", "Delete user fail !");
+    }
   };
 };

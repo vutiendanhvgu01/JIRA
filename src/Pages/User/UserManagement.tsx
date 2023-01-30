@@ -8,7 +8,11 @@ import type {
 } from "antd/es/table/interface";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/configStore";
-import { getUserApi } from "../../redux/reducers/UserReducer";
+import {
+  deleteUserManagementAPI,
+  getUserApi,
+} from "../../redux/reducers/UserReducer";
+import { DeleteOutlined } from "@ant-design/icons";
 type Props = {};
 interface DataType {
   userId: number;
@@ -102,6 +106,24 @@ const UserManagement = (props: Props) => {
       title: "Phone Number",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
+    },
+    {
+      title: "Action",
+      key: "Action",
+      render: (_, record, index) => {
+        console.log(record);
+        return (
+          <button className="btn btn-danger mr-2">
+            <DeleteOutlined
+              className="bg-danger"
+              style={{ fontSize: 17 }}
+              onClick={() => {
+                dispatch(deleteUserManagementAPI(record.userId));
+              }}
+            />
+          </button>
+        );
+      },
     },
   ];
   return (

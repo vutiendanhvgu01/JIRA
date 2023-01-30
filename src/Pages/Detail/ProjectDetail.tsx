@@ -25,7 +25,9 @@ import ReactHtmlParser, {
 import {
   getAllCommentApi,
   getTaskDetailByApi,
-  getTaskDetailIdAction, removeTask, updateStatusApi,
+  getTaskDetailIdAction,
+  removeTask,
+  updateStatusApi,
 } from "../../redux/reducers/TaskReducer";
 import {
   addUserApi,
@@ -34,12 +36,14 @@ import {
   setModalOpen,
 } from "../../redux/reducers/UserReducer";
 import ModalTaskDetail from "./ModalTaskDetail";
-import { DragDropContext,Droppable,Draggable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Breadcrumb } from "antd";
+import { NavLink } from "react-router-dom";
 type Props = {};
 
 const ProjectDetail = (props: Props) => {
   const { Search } = Input;
-  const onSearch = (value: string) => { };
+  const onSearch = (value: string) => {};
   const [value, setValue] = useState("");
   const searchRef = useRef(null);
   const dispatch: DispatchType = useDispatch();
@@ -54,25 +58,44 @@ const ProjectDetail = (props: Props) => {
     const actionGetProject = getProjectDetailApi(param.id);
     dispatch(actionGetProject);
   }, []);
-// Drag Drop
-const handleDragEnd = (result) => {
-let {source,destination} = result
-if(!destination){
-  return;
-}
-if(source.index === destination.index && source.droppableId === destination.droppableId)
-{
-  return;
-}
-const dataUpdateStatus = {
-  taskId:Number(result.draggableId),
-  statusId:destination.droppableId
-}
-console.log(dataUpdateStatus)
-dispatch(updateStatusApi(dataUpdateStatus,param.id));
-}
+  // Drag Drop
+  const handleDragEnd = (result) => {
+    let { source, destination } = result;
+    if (!destination) {
+      return;
+    }
+    if (
+      source.index === destination.index &&
+      source.droppableId === destination.droppableId
+    ) {
+      return;
+    }
+    const dataUpdateStatus = {
+      taskId: Number(result.draggableId),
+      statusId: destination.droppableId,
+    };
+    console.log(dataUpdateStatus);
+    dispatch(updateStatusApi(dataUpdateStatus, param.id));
+  };
   return (
     <>
+      <Breadcrumb>
+        <Breadcrumb.Item>
+          <NavLink to="/home" style={{ textDecoration: "none" }}>
+            Home
+          </NavLink>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <NavLink
+            to="/home/projectManagement"
+            style={{ textDecoration: "none" }}
+          >
+            Project management
+          </NavLink>
+        </Breadcrumb.Item>
+
+        <Breadcrumb.Item>{detailProjectById?.projectName}</Breadcrumb.Item>
+      </Breadcrumb>
       <div className="projectDetail-container">
         <h3 className="mb-4" style={{ fontSize: 30, fontWeight: "bold" }}>
           Cyber Board
@@ -180,7 +203,7 @@ dispatch(updateStatusApi(dataUpdateStatus,param.id));
                         setValue(text);
                       }}
                       onSelect={(valueSelect, option) => {
-                        setValue(option.label);
+                        setValue(option?.label);
 
                         dispatch(
                           addUserApi(
@@ -225,76 +248,142 @@ dispatch(updateStatusApi(dataUpdateStatus,param.id));
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="projectDetail-body row mt-4">
             {detailProjectById?.lstTask?.map((item: LstTask, index: number) => {
-              return <Droppable droppableId = {item.statusId}>
-                {(provided) => {
-                  return  <div 
-                  ref= {provided.innerRef}
-                  {...provided.droppableProps}
-                  className="card-wrap col-3" key={index}>
-                  <div className="card backlog">
-                    <div className="card-header">
-                      <p className='card-title'>{item?.statusName}</p>
-                    </div>
-                    <div className="card-body" style={{ padding: 8, background: '#f7f7f7' }}>
-                      {item?.lstTaskDeTail.map((lstTask: LstTaskDeTail, index: number) => {
-                        return <Draggable key={lstTask.taskId.toString()} index={index}
-                        draggableId={lstTask.taskId.toString()}>
-                        {(provided) => {
-                      
-                          return   <div
-                          ref= {provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
+              return (
+                <Droppable droppableId={item.statusId}>
+                  {(provided) => {
+                    return (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="card-wrap col-3"
+                        key={index}
+                      >
+                        <div className="card backlog">
+                          <div className="card-header">
+                            <p className="card-title">{item?.statusName}</p>
+                          </div>
+                          <div
+                            className="card-body"
+                            style={{ padding: 8, background: "#f7f7f7" }}
                           >
-                          <li onClick={() => {
-                            const actionTaskId = getTaskDetailIdAction(lstTask.taskId)
-                            dispatch(actionTaskId)
-                            const actionTaskDetail = getTaskDetailByApi(lstTask.taskId)
-                            dispatch(actionTaskDetail)
-                            dispatch(setModalOpen(true))
-  
-                          }} key={index} className="list-group-item p-4 mb-2" style={{ cursor: 'pointer', background: 'white' }}>
-                            <div className="block-task-name row mb-2" style={{ justifyContent: 'space-between' }}>
-  
-                              <p className='mb-3 col-4'>{ReactHtmlParser(lstTask?.taskName)}</p>
-                              <div className='col-4'></div>
-                              <button style={{ transform: 'translateY(-8px)' }} className='btn delete-task text-danger col-4' onClick={(e) => {
-                                e.stopPropagation()
-                                dispatch(removeTask(lstTask.taskId, param.id))
-                              }}>Delete</button>
-                            </div>
-  
-  
-                            <div className="block d-flex" style={{ justifyContent: 'space-between' }} >
-                              <div className="block-left">
-                                <p className='text-danger'>{lstTask.priorityTask.priority}</p>
-                              </div>
-                              <div className="block-right">
-                                <div className="avatar-group">
-                                  {lstTask?.assigness.map((memberAssign, index) => {
-                                    return <Avatar key={index} className='avatar' src={memberAssign?.avatar}>
-                                    </Avatar>
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                        </div>
-                        }}
-                        </Draggable>
-                      })}
-                      {provided.placeholder}
-                    </div>
-                  </div>
-                </div>
+                            {item?.lstTaskDeTail.map(
+                              (lstTask: LstTaskDeTail, index: number) => {
+                                return (
+                                  <Draggable
+                                    key={lstTask.taskId.toString()}
+                                    index={index}
+                                    draggableId={lstTask.taskId.toString()}
+                                  >
+                                    {(provided) => {
+                                      return (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                        >
+                                          <li
+                                            onClick={() => {
+                                              const actionTaskId =
+                                                getTaskDetailIdAction(
+                                                  lstTask.taskId
+                                                );
+                                              dispatch(actionTaskId);
+                                              const actionTaskDetail =
+                                                getTaskDetailByApi(
+                                                  lstTask.taskId
+                                                );
+                                              dispatch(actionTaskDetail);
+                                              dispatch(setModalOpen(true));
+                                            }}
+                                            key={index}
+                                            className="list-group-item p-4 mb-2"
+                                            style={{
+                                              cursor: "pointer",
+                                              background: "white",
+                                            }}
+                                          >
+                                            <div
+                                              className="block-task-name row mb-2"
+                                              style={{
+                                                justifyContent: "space-between",
+                                              }}
+                                            >
+                                              <p className="mb-3 col-4">
+                                                {ReactHtmlParser(
+                                                  lstTask?.taskName
+                                                )}
+                                              </p>
+                                              <div className="col-4"></div>
+                                              <button
+                                                style={{
+                                                  transform: "translateY(-8px)",
+                                                }}
+                                                className="btn delete-task text-danger col-4"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  dispatch(
+                                                    removeTask(
+                                                      lstTask.taskId,
+                                                      param.id
+                                                    )
+                                                  );
+                                                }}
+                                              >
+                                                Delete
+                                              </button>
+                                            </div>
 
-                }}
-             
-              </Droppable>
+                                            <div
+                                              className="block d-flex"
+                                              style={{
+                                                justifyContent: "space-between",
+                                              }}
+                                            >
+                                              <div className="block-left">
+                                                <p className="text-danger">
+                                                  {
+                                                    lstTask.priorityTask
+                                                      .priority
+                                                  }
+                                                </p>
+                                              </div>
+                                              <div className="block-right">
+                                                <div className="avatar-group">
+                                                  {lstTask?.assigness.map(
+                                                    (memberAssign, index) => {
+                                                      return (
+                                                        <Avatar
+                                                          key={index}
+                                                          className="avatar"
+                                                          src={
+                                                            memberAssign?.avatar
+                                                          }
+                                                        ></Avatar>
+                                                      );
+                                                    }
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </li>
+                                        </div>
+                                      );
+                                    }}
+                                  </Draggable>
+                                );
+                              }
+                            )}
+                            {provided.placeholder}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                </Droppable>
+              );
             })}
           </div>
         </DragDropContext>
-
       </div>
       {<ModalTaskDetail />}
     </>
